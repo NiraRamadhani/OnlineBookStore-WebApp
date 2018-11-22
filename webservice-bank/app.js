@@ -20,28 +20,23 @@ connection.connect(function(err){
 app.post('/validasi', urlencodedParser, function(req, res){
   if(!req.body) return res.sendStatus(400)
   num = req.body.cardnumber;
-  console.log(num);
   connection.query('SELECT * FROM nasabah where nomor_kartu=' + num, function(err, rows, fields){
     if(err) throw err;
-    console.log(num);
-    // if (rows == "") {
-    //   // res.writeHead(200, {'Content-Type': 'text/html'});
-    //   res.send("<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>");
-    //   // res.end();
-    // } else {
-    //   // res.writeHead(200, {'Content-Type': 'text/html'});
-    //   res.send("<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>");
-    //   // res.end();
-    // }
-    // res.writeHead(200, {'Content-Type': 'application/json'});
-    // res.write(JSON.stringify({status: OK}));
     res.send(rows);
-    console.log('success get');
+    console.log('success post');
   })
 });
 
-app.post('/transfer',function(req, res){
-
+app.post('/transfer', urlencodedParser, function(req, res){
+  if(!req.body) return res.sendStatus(400)
+  nomorPengirim = req.body.nomorPengirim;
+  nomorPenerima = req.body.nomorPenerima;
+  jumlah = req.body.jumlah;
+  connection.query(`INSERT INTO transaksi(nomor_pengirim, nomor_penerima, jumlah) 
+  VALUES(${nomorPengirim}, ${nomorPenerima}, ${jumlah})`, function(){
+    console.log("insert success");
+    res.send('insert success');
+  });
 })
 
 app.listen(3000, function(){
