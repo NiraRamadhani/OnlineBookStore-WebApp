@@ -8,19 +8,19 @@ var connection = mysql.createConnection({
     database : 'bank'
   }
 )
-var fs = require('fs');
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+var urlencodedParser =bodyParser.urlencoded({extended: false});
 
 connection.connect(function(err){
   if(err) throw err;
   console.log('connected to DB');
 });
 
-app.get('/', function(req, res){
-  res.sendfile('views/index.html');
-});
-
-app.get('/validasi',function(req, res){
-  num = req.params.cardnumber;
+app.post('/validasi', urlencodedParser, function(req, res){
+  if(!req.body) return res.sendStatus(400)
+  num = req.body.cardnumber;
+  console.log(num);
   connection.query('SELECT * FROM nasabah where nomor_kartu=' + num, function(err, rows, fields){
     if(err) throw err;
     res.send(rows);
