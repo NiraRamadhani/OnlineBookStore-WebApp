@@ -8,6 +8,7 @@ var connection = mysql.createConnection({
     database : 'bank'
   }
 )
+var fs = require('fs');
 
 connection.connect(function(err){
   if(err) throw err;
@@ -15,10 +16,10 @@ connection.connect(function(err){
 });
 
 app.get('/', function(req, res){
-   res.send("Hello world!");
+  res.sendfile('views/index.html');
 });
 
-app.get('/validasi/:cardnumber',function(req, res){
+app.get('/validasi',function(req, res){
   num = req.params.cardnumber;
   connection.query('SELECT * FROM nasabah where nomor_kartu=' + num, function(err, rows, fields){
     if(err) throw err;
