@@ -180,14 +180,14 @@
 
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                        document.getElementById('card_status').innerHTML = xmlHttp.responseText;                        
-                        if (xmlHttp.responseText == "") {
+                        // document.getElementById('card_status').innerHTML = xmlHttp.responseText;                        
+                        // if (xmlHttp.responseText == "") {
                             // echo 'KOSONG COY';
-                            document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>";
-                        } else {
+                        document.getElementById('card_status').innerHTML = xmlHttp.responseText;
+                        // } else {
                             // echo 'ADA COY';
-                            document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>";
-                        }
+                            // document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>";
+                        // }
                     }
                 }
                 xmlHttp.send(param);

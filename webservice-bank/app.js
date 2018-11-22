@@ -21,15 +21,17 @@ app.post('/validasi', urlencodedParser, function(req, res){
   if(!req.body) return res.sendStatus(400)
   num = req.body.cardnumber;
   console.log(num);
-  connection.query('SELECT * FROM nasabah where nomor_kartu=\"' + num + "\";", function(err, rows, fields){
+  connection.query('SELECT * FROM nasabah where nomor_kartu=' + num, function(err, rows, fields){
     if(err) throw err;
-    // console.log(rows);
-    if (rows === "[]") {
-      res.write('HAHAHAHAHA');
-    } else {
-      res.write('CACADD');
-    }
-    // res.send(rows);
+    console.log(num);
+    // if (rows === "[]") {
+    //   res.write('HAHAHAHAHA');
+    // } else {
+    //   res.write('CACADD');
+    // }
+    // res.writeHead(200, {'Content-Type': 'application/json'});
+    // res.write(JSON.stringify({status: OK}));
+    res.send(rows);
     console.log('success get');
   })
 });
