@@ -174,14 +174,16 @@
                 xmlHttp.open("POST", url, true);
 
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlHttp.setRequestHeader("Content-length", param.length);
-                xmlHttp.setRequestHeader("Host", "3000");
-                xmlHttp.setRequestHeader("Connection", "close");
+                // xmlHttp.setRequestHeader("Content-length", param.length);
+                // xmlHttp.setRequestHeader("Host", "3000");
+                // xmlHttp.setRequestHeader("Connection", "close");
 
                 xmlHttp.onreadystatechange = function() {
+                    console.log(xmlHttp.responseText);
+                    console.log(xmlHttp.status);                    
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                        document.getElementById('card_status').innerHTML = xmlHttp.responseText;
-                        echo(xmlHttp.responseText);
+                        console.log(xmlHttp);
+                        document.getElementById('card_status').innerHTML = (xmlHttp.responseText);
                     }
                 }
                 xmlHttp.send(param);
