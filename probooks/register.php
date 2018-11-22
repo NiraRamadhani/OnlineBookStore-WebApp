@@ -51,7 +51,7 @@
                     <tr>
                         <td>Card Number</td>
                         <td colspan=2><input type="text" name="cardnumber" class="ajax" onkeyup="checkcard();"></td>
-                        <td id="card_status"></td>
+                        <td id="card_status">TEST</td>
                     </tr>
                 </table></center>
                 <br>
@@ -180,14 +180,8 @@
 
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                        // document.getElementById('card_status').innerHTML = xmlHttp.responseText;                        
-                        // if (xmlHttp.responseText == "") {
-                            // echo 'KOSONG COY';
                         document.getElementById('card_status').innerHTML = xmlHttp.responseText;
-                        // } else {
-                            // echo 'ADA COY';
-                            // document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>";
-                        // }
+                        echo(xmlHttp.responseText);
                     }
                 }
                 xmlHttp.send(param);

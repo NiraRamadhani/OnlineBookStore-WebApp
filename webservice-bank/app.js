@@ -24,10 +24,14 @@ app.post('/validasi', urlencodedParser, function(req, res){
   connection.query('SELECT * FROM nasabah where nomor_kartu=' + num, function(err, rows, fields){
     if(err) throw err;
     console.log(num);
-    // if (rows === "[]") {
-    //   res.write('HAHAHAHAHA');
+    // if (rows == "") {
+    //   // res.writeHead(200, {'Content-Type': 'text/html'});
+    //   res.send("<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>");
+    //   // res.end();
     // } else {
-    //   res.write('CACADD');
+    //   // res.writeHead(200, {'Content-Type': 'text/html'});
+    //   res.send("<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>");
+    //   // res.end();
     // }
     // res.writeHead(200, {'Content-Type': 'application/json'});
     // res.write(JSON.stringify({status: OK}));
