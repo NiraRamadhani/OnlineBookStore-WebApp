@@ -48,6 +48,11 @@
                         <td>Phone Number</td>
                         <td colspan=2><input type="text" class="nonajax" name="phone"></td>
                     </tr>
+                    <tr>
+                        <td>Card Number</td>
+                        <td colspan=2><input type="text" name="cardnumber" class="ajax" onkeyup="checkcard();"></td>
+                        <td id="card_status"></td>
+                    </tr>
                 </table></center>
                 <br>
                 <a href="login.php">Already have an account?</a>
@@ -156,6 +161,33 @@
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
                         document.getElementById('email_status').innerHTML = xmlHttp.responseText;
+                    }
+                }
+                xmlHttp.send(param);
+            }
+
+            function checkcard() {
+                var cardnumber = document.forms["register"]["cardnumber"].value;
+                var xmlHttp = new XMLHttpRequest();
+                var url="http://localhost:3000/validasi";
+                var param = "cardnumber=" + cardnumber;
+                xmlHttp.open("POST", url, true);
+
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", param.length);
+                xmlHttp.setRequestHeader("Host", "3000");
+                xmlHttp.setRequestHeader("Connection", "close");
+
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        document.getElementById('card_status').innerHTML = xmlHttp.responseText;                        
+                        if (xmlHttp.responseText == "") {
+                            // echo 'KOSONG COY';
+                            document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>";
+                        } else {
+                            // echo 'ADA COY';
+                            document.getElementById('card_status').innerHTML = "<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>";
+                        }
                     }
                 }
                 xmlHttp.send(param);
