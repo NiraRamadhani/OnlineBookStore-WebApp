@@ -28,9 +28,11 @@ app.post('/validasi', urlencodedParser, function(req, res){
       res.write("");
     } else {
       if (rows != "") {
+        //Card already exist
         res.write("<img id=cardstatus src='public/icons/checked.png' width=15px height=15px>");
       } else {
-        res.write("<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>");
+        //Card doesn't exist
+        res.write("<img id=cardstatus src='public/icons/mark.png' width=15px height=15px>");        
       }
     }
     res.end();

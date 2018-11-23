@@ -17,10 +17,12 @@
     $email = $_POST['email'];
     $adr = $_POST['address'];
     $phone = $_POST['phone'];
+    $card = $_POST['cardnumber'];
 
     //create query
-    if (isset($name, $uname, $pw, $email, $adr, $phone)) {
-        $query = "INSERT INTO user VALUES('$uname', '$pw', '$name', '$phone', '$adr', '$email', 'public/img/profpic/default.jpg');";
+    if (isset($name, $uname, $pw, $email, $adr, $phone, $card)) {
+        // TAMBAHIN DISINI
+        $query = "INSERT INTO user VALUES('$uname', '$pw', '$name', '$phone', '$adr', '$email', 'public/img/profpic/default.jpg', '$card');";
         //execute query
         if ($conn->query($query) === TRUE) {
             $access_token = bin2hex(random_bytes(16));

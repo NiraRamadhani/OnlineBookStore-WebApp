@@ -78,6 +78,11 @@ td {
     padding-left: 8px;
 }
 
+td#card_status {
+    padding-left: 5;
+    padding-top: 4px;
+}
+
 .ajax {
     width: 135px;
     font-family: 'Nunito';
