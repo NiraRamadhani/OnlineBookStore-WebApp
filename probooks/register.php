@@ -50,8 +50,8 @@
                     </tr>
                     <tr>
                         <td>Card Number</td>
-                        <td colspan=2><input type="text" name="cardnumber" class="ajax" onkeyup="checkcard();"></td>
-                        <td id="card_status">TEST</td>
+                        <td><input type="text" name="cardnumber" class="ajax" onkeyup="checkcard();"></td>
+                        <td id="card_status"></td>
                     </tr>
                 </table></center>
                 <br>
@@ -73,6 +73,7 @@
                 var cpw = document.forms["register"]["cpassword"].value;
                 var address = document.forms["register"]["address"].value;
                 var phone = document.forms["register"]["phone"].value;
+                var cardnumber = document.forms["register"]["cardnumber"].value;
                 if (name == "") { //Name field empty
                     alert("Name must be filled out");
                     return false;
@@ -117,15 +118,24 @@
                     alert("Email is invalid");
                     return false;
                 }
+                if (cardnumber == "") { //Email field empty
+                    alert("Card number must be filled out");
+                    return false;
+                }
                 
-                var namehtml = document.getElementById("unamestatus").getAttribute("src");
-                var emailhtml = document.getElementById("emailstatus").getAttribute("src");
+                var namehtml = document.getElementById("username_status").getAttribute("src");
+                var emailhtml = document.getElementById("email_status").getAttribute("src");
+                var cardhtml = document.getElementById("card_status").getAttribute("src");
                 if (namehtml == "public/icons/mark.png") {
                     alert("Username already exists");
                     return false;
                 }
                 if (emailhtml == "public/icons/mark.png") {
                     alert("Email already exists");
+                    return false;
+                }
+                if (cardhtml == "public/icons/mark.png") {
+                    alert("Card number doesn't exists");
                     return false;
                 }
             }
@@ -174,14 +184,16 @@
                 xmlHttp.open("POST", url, true);
 
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlHttp.setRequestHeader("Content-length", param.length);
-                xmlHttp.setRequestHeader("Host", "3000");
-                xmlHttp.setRequestHeader("Connection", "close");
+                // xmlHttp.setRequestHeader("Content-length", param.length);
+                // xmlHttp.setRequestHeader("Host", "3000");
+                // xmlHttp.setRequestHeader("Connection", "close");
 
                 xmlHttp.onreadystatechange = function() {
+                    console.log(xmlHttp.responseText);
+                    console.log(xmlHttp.status);                    
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                        document.getElementById('card_status').innerHTML = xmlHttp.responseText;
-                        echo(xmlHttp.responseText);
+                        console.log(xmlHttp);
+                        document.getElementById('card_status').innerHTML = (xmlHttp.responseText);
                     }
                 }
                 xmlHttp.send(param);
