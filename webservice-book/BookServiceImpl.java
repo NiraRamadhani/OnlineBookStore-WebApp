@@ -12,6 +12,7 @@ import javax.jws.WebService;
 import java.sql.*;
 import com.probooks.jaxws.beans.Book;
 import com.probooks.jaxws.beans.Transaksi;
+import org.json.JSONObject; 
 
 @WebService(endpointInterface = "com.probooks.jaxws.service.BookService")  
 public class BookServiceImpl implements BookService {
@@ -68,11 +69,12 @@ public class BookServiceImpl implements BookService {
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		int responseCode = con.getResponseCode();
 		System.out.println("GET Response Code :: " + responseCode);
+		StringBuffer response = new StringBuffer();
 		if (responseCode == HttpURLConnection.HTTP_OK) { // success
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
 			String inputLine;
-			StringBuffer response = new StringBuffer();
+			
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
@@ -80,10 +82,15 @@ public class BookServiceImpl implements BookService {
 			in.close();
 
 			// print result
+			System.out.println("Result: ");
 			System.out.println(response.toString());
 		} else {
 			System.out.println("GET request not worked");
 		}
+
+		JSONObject json = new JSONObject(response.toString());
+	    System.out.println(json.getString("kind"));
+	  	
   		int books_count = 1;
   		String[] bookIDs = new String[books_count];
   		return bookIDs;
