@@ -20,7 +20,7 @@ public class BookServiceImpl implements BookService {
   public boolean addTransaksi(Transaksi t) throws IOException{
     String USER_AGENT = "Mozilla/5.0";
     String POST_URL = "http://localhost:3000/transfer";
-    String POST_PARAMS = "nomorPengirim=13516099&nomorPenerima=13516018&jumlah=5000";
+    String POST_PARAMS = "nomorPengirim="+t.getNomorPengirim()+"&nomorPenerima="+t.getNomorPenerima()+"&jumlah="+t.getJumlah();
     URL obj = new URL(POST_URL);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
@@ -59,8 +59,17 @@ public class BookServiceImpl implements BookService {
 
   @Override
 	public String searchBook(String term){
-    System.out.print(term + "ANEH");
+    System.out.print(term);
     return term;
   };
 
+	@Override
+	public String getDetail(String id){
+		return id;
+	};
+
+	@Override
+	public String getRecommendation(String kategori){
+		return kategori;
+	};
 }

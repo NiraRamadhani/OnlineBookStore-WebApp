@@ -24,4 +24,10 @@ public interface BookService {
   @WebMethod
 	public String searchBook(String term);
 
+	@WebMethod
+	public String getDetail(String id);
+
+	@WebMethod
+	public String getRecommendation();
+
 }
