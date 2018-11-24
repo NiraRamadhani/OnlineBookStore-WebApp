@@ -28,6 +28,6 @@ public interface BookService {
 	public String getDetail(String id);
 
 	@WebMethod
-	public String getRecommendation();
+	public String getRecommendation(String kategory);
 
 }

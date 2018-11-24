@@ -9,7 +9,7 @@ import java.net.URL;
 
 import javax.jws.WebService;
 
-
+import java.sql.*;
 import com.probooks.jaxws.beans.Book;
 import com.probooks.jaxws.beans.Transaksi;
 
@@ -70,6 +70,27 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public String getRecommendation(String kategori){
-		return kategori;
+		String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+		int orderid;
+		String idbook = "0";
+		int total;
+		try{  
+      Class.forName("com.mysql.cj.jdbc.Driver");  
+      Connection con = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/bookservice",
+				"root",""
+			);   
+      Statement stmt = con.createStatement();  
+      ResultSet rs = stmt.executeQuery(query);
+      while(rs.next()){
+				orderid = rs.getInt(1);
+				idbook = rs.getString(2);
+				kategori = rs.getString(3);
+				total = rs.getInt(4);
+				System.out.println(orderid + "  " + idbook + "  " + kategori + " " + total);
+			}  
+      con.close();  
+    }catch(Exception e){System.out.println(e);}
+		return idbook;
 	};
 }
