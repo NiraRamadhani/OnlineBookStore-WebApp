@@ -58,10 +58,36 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-	public String searchBook(String term){
-    System.out.print(term);
-    return term;
-  };
+	public String[] searchBook(String term) throws IOException{
+    String USER_AGENT = "Mozilla/5.0";
+    String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+ term;
+
+    URL obj = new URL(GET_URL);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		int responseCode = con.getResponseCode();
+		System.out.println("GET Response Code :: " + responseCode);
+		if (responseCode == HttpURLConnection.HTTP_OK) { // success
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			// print result
+			System.out.println(response.toString());
+		} else {
+			System.out.println("GET request not worked");
+		}
+  		int books_count = 1;
+  		String[] bookIDs = new String[books_count];
+  		return bookIDs;
+  }
 
 	@Override
 	public String getDetail(String id){

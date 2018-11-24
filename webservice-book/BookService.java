@@ -22,7 +22,7 @@ public interface BookService {
 	public boolean addTransaksi(Transaksi t) throws IOException;
 
   @WebMethod
-	public String searchBook(String term);
+	public String[] searchBook(String term) throws IOException;
 
 	@WebMethod
 	public String getDetail(String id);
