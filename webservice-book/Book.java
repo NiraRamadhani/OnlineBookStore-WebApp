@@ -1,29 +1,31 @@
 package com.probooks.jaxws.beans;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Book implements Serializable {
 
   private static final long serialVersionUID = -5577579081118070434L;
 
-  private int id;
+  private String id;
   private String judul;
-  private String penulis;
+  private String[] penulis;
   private String gambar;
   private String sinopsis;
   private float rating;
+  private int votescount;
 
   /**
   * @return int return the id
   */
-  public int getId() {
+  public String getId() {
     return id;
   }
 
   /**
   * @param id the id to set
   */
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -44,15 +46,15 @@ public class Book implements Serializable {
   /**
   * @return String return the penulis
   */
-  public String getPenulis() {
+  public String[] getPenulis() {
     return penulis;
   }
 
   /**
   * @param penulis the penulis to set
   */
-  public void setPenulis(String penulis) {
-    this.penulis = penulis;
+  public void setPenulis(String[] penulis) {
+    this.penulis = Arrays.copyOf(penulis, penulis.length);
   }
 
   /**
@@ -100,5 +102,12 @@ public class Book implements Serializable {
   public String toString(){
     return id+"::"+judul+"::"+penulis+"::"+gambar+"::"+sinopsis+"::"+rating;
   }
+  
+  public void setVotesCount(int votescount) {
+    this.votescount = votescount;
+  } 
 
+  public int getVotesCount() {
+    return votescount;    
+  }
 }

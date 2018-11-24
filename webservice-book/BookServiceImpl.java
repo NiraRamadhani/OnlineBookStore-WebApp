@@ -13,6 +13,7 @@ import java.sql.*;
 import com.probooks.jaxws.beans.Book;
 import com.probooks.jaxws.beans.Transaksi;
 import org.json.JSONObject; 
+import org.json.JSONArray;
 
 @WebService(endpointInterface = "com.probooks.jaxws.service.BookService")  
 public class BookServiceImpl implements BookService {
@@ -59,9 +60,9 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-	public String[] searchBook(String term) throws IOException{
+	public Book[] searchBook(String term) throws IOException{
     String USER_AGENT = "Mozilla/5.0";
-    String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+ term;
+    String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+term;
 
     term = term.replace(" ", "+");
     URL obj = new URL(GET_URL);
@@ -83,18 +84,62 @@ public class BookServiceImpl implements BookService {
 			in.close();
 
 			// print result
-			System.out.println("Result: ");
-			System.out.println(response.toString());
+			//System.out.println("Result: ");
+			//System.out.println(response.toString());
 		} else {
 			System.out.println("GET request not worked");
 		}
 
 		JSONObject json = new JSONObject(response.toString());
-	    System.out.println(json.getString("kind"));
 	  	
-  		int books_count = 1;
-  		String[] bookIDs = new String[books_count];
-  		return bookIDs;
+  		int books_count = json.getJSONArray("items").length();
+  		Book[] books = new Book[books_count];
+  		
+  		for (int i = 0; i < books_count; i++) {
+  			books[i] = new Book();
+  			books[i].setId(json.getJSONArray("items").getJSONObject(i).getString("id"));
+  			books[i].setJudul(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
+  			
+  
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("authors")) {
+				JSONArray authors_array = json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("authors");
+	  			String[] authors = new String[authors_array.length()];
+	  			for (int j = 0; j < authors_array.length(); j++) {
+	  				authors[j] = authors_array.getString(j);
+	  			}
+	  			books[i].setPenulis(authors);  				
+  			} else {
+  				String[] anon = new String[1];
+  				anon[0] = "Anonymous";
+  				books[i].setPenulis(anon);
+  			}
+  			
+  			
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("description")) {
+ 				books[i].setSinopsis(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description"));
+  			} else {
+  				books[i].setSinopsis("No description");
+  			}
+  			
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
+  				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
+  			} else {
+  				books[i].setGambar("No Image");
+  			}
+
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("ratingsCount")) {
+  				books[i].setVotesCount(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getInt("ratingsCount"));	
+  			} else {
+  				books[i].setVotesCount(0);
+  			}
+
+ 			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
+  				books[i].setRating(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getFloat("averageRating"));	
+  			} else {
+  				books[i].setRating(0);
+  			}			
+  		}
+  		return books;
   }
 
 	@Override
