@@ -63,6 +63,7 @@ public class BookServiceImpl implements BookService {
     String USER_AGENT = "Mozilla/5.0";
     String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=intitle:"+ term;
 
+    term = term.replace(" ", "+");
     URL obj = new URL(GET_URL);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
