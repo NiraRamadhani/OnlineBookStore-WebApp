@@ -60,9 +60,10 @@ app.post('/transfer', urlencodedParser, function(req, res){
       connection.query(`UPDATE nasabah SET saldo = saldo + ${jumlah} WHERE nomor_kartu = ${nomorPenerima}`, function(){
         console.log("money received");
       });
-      res.send("transfer success");
+      res.send(true);
     } else {
       console.log("saldo kurang");
+      res.send(false);
     }
   });
 });

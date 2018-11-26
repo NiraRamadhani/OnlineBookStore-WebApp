@@ -19,7 +19,7 @@ import org.json.JSONArray;
 public class BookServiceImpl implements BookService {
 
   @Override
-  public boolean addTransaksi(Transaksi t) throws IOException{
+  public boolean pembelian(Transaksi t, Book b) throws IOException{
     String USER_AGENT = "Mozilla/5.0";
     String POST_URL = "http://localhost:3000/transfer";
     String POST_PARAMS = "nomorPengirim="+t.getNomorPengirim()+"&nomorPenerima="+t.getNomorPenerima()+"&jumlah="+t.getJumlah();
@@ -51,7 +51,27 @@ public class BookServiceImpl implements BookService {
 			in.close();
 
 			// print result
-			System.out.println(response.toString());
+			System.out.println(response);
+			if(response.toString().equals("true")){
+				// Insert to DB successfull
+				String query ="INSERT INTO orderbook(bookid, kategori, jumlah)" + "VALUES(?, ?, ?)";
+				System.out.println(query);
+				try{  
+					Class.forName("com.mysql.cj.jdbc.Driver");  
+					Connection conDB = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/bookservice",
+						"root",""
+					);   
+					PreparedStatement preparedStmt = conDB.prepareStatement(query);
+					preparedStmt.setString(1, b.getId());
+					preparedStmt.setString(2, b.getKategori());
+					preparedStmt.setInt(3, t.getJumlah()/b.getHarga());
+					preparedStmt.execute();
+					conDB.close();  
+				}catch(Exception e){System.out.println(e);}				
+			}else{
+				
+			}
       return true;
 		} else {
 			System.out.println("POST request not worked");
@@ -100,7 +120,6 @@ public class BookServiceImpl implements BookService {
   			books[i].setId(json.getJSONArray("items").getJSONObject(i).getString("id"));
   			books[i].setJudul(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
   			
-  
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("authors")) {
 				JSONArray authors_array = json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("authors");
 	  			String[] authors = new String[authors_array.length()];
@@ -113,7 +132,6 @@ public class BookServiceImpl implements BookService {
   				anon[0] = "Anonymous";
   				books[i].setPenulis(anon);
   			}
-  			
   			
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("description")) {
  				books[i].setSinopsis(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description"));
@@ -133,7 +151,7 @@ public class BookServiceImpl implements BookService {
   				books[i].setVotesCount(0);
   			}
 
- 			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
+ 				if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
   				books[i].setRating(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getFloat("averageRating"));	
   			} else {
   				books[i].setRating(0);
