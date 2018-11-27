@@ -49,12 +49,21 @@
       </div>  
       <div class="content">
         <div class="container text-align-left" ng-if="probook.books.length > 0">
-          <h1 class="text-orange">Search Result</h1>
+        <table class="full-width">
+            <tr>
+                <td id="search-title">
+                    <h1 class="text-orange">Search Result</h2>
+                </td>
+                <td id="found-count" class="text-align-right vertical-align-bottom">
+                    <p>Found <span id="num-rows">{{probook.books.length}}</span> result(s)</p>
+                </td>
+            </tr>
+        </table>  
           <div class="container">
             <table class="full-width">
               <tr ng-repeat="book in probook.books">
                 <td class='picture vertical-align-top'>
-                  <img class='img-book' ng-src= "{{book.gambar}}">
+                  <img ng-src= "{{book.gambar}}">
                 </td>
                 <td class='book-data text-align-left vertical-align-top'>
                   <p class='title-book text-orange'>{{book.judul}}</p>
