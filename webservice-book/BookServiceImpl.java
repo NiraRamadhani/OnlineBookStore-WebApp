@@ -23,7 +23,7 @@ public class BookServiceImpl implements BookService {
 		//GET BOOK DETAILS
 		Book b = new Book();
 		try{  
-			String query = String.format("SELECT * FROM books WHERE bookid='%s'", idbook);
+			String query = String.format("SELECT * FROM books WHERE id='%s'", idbook);
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection conDB = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/bookservice",
