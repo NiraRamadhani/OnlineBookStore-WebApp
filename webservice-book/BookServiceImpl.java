@@ -125,7 +125,6 @@ public class BookServiceImpl implements BookService {
 					con.getInputStream()));
 			String inputLine;
 			
-
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
@@ -176,7 +175,6 @@ public class BookServiceImpl implements BookService {
   				books[i].setKategori("Uncategorized");
   			}
 
-
   			//gambar
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
@@ -213,8 +211,94 @@ public class BookServiceImpl implements BookService {
   }
 
 	@Override
-	public String getDetail(String id){
-		return id;
+	public Book getDetail(String id) throws IOException{
+		String USER_AGENT = "Mozilla/5.0";
+		String GET_URL = "https://www.googleapis.com/books/v1/volumes/"+id;
+
+		URL obj = new URL(GET_URL);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		int responseCode = con.getResponseCode();
+		System.out.println("GET Response Code :: " + responseCode);
+		StringBuffer response = new StringBuffer();
+		if (responseCode == HttpURLConnection.HTTP_OK) { // success
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String inputLine;
+			
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+		} else {
+			System.out.println("GET request not worked");
+		}
+
+		JSONObject book_json = new JSONObject(response.toString());
+		Book detail = new Book();
+
+		String judul = book_json.getJSONObject("volumeInfo").getString("title");
+		String gambar;
+		float rating;
+		float harga;
+		String kategori;
+		String sinopsis;
+		
+		// Penulis
+		JSONArray authors_array = book_json.getJSONObject("volumeInfo").getJSONArray("authors");
+		String[] penulis = new String[authors_array.length()];
+		for (int i = 0; i < authors_array.length(); i++) {
+			penulis[i] = authors_array.getString(i);
+		}
+
+		// Gambar
+		if (book_json.getJSONObject("volumeInfo").has("imageLinks")) {
+			gambar = book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("small");
+		} else {
+			gambar = "No Image";
+		}
+
+		// Harga
+		if (book_json.getJSONObject("saleInfo").has("listPrice")) {
+			harga = book_json.getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount");
+		} else {
+			harga = 0;
+		}
+
+		// Average Rating
+		if (book_json.getJSONObject("volumeInfo").has("averageRating")) {
+			rating = book_json.getJSONObject("volumeInfo").getFloat("averageRating");	
+		} else {
+			rating = 0;
+		}
+
+		// Sinopsis
+		if (book_json.getJSONObject("volumeInfo").has("description")) {
+			sinopsis = book_json.getJSONObject("volumeInfo").getString("description");
+		} else {
+			sinopsis = "No description";
+		}
+
+		// Kategori
+		if (book_json.getJSONObject("volumeInfo").has("categories")) {
+			kategori = book_json.getJSONObject("volumeInfo").getJSONArray("categories").getString(0);
+		} else {
+			kategori = "Uncategorized";
+		}
+
+		// Set Value of Detail
+		detail.setId(id);
+		detail.setJudul(judul);
+		detail.setPenulis(penulis);
+		detail.setGambar(gambar);
+		detail.setRating(rating);
+		detail.setHarga(harga);
+		detail.setKategori(kategori);
+		detail.setSinopsis(sinopsis);
+
+		return detail;
 	};
 
 	@Override
