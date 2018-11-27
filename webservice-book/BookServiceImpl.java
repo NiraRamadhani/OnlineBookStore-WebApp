@@ -141,6 +141,14 @@ public class BookServiceImpl implements BookService {
   				books[i].setSinopsis("No description");
   			}
   			
+  			//kategori
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("categories")) {
+ 				books[i].setKategori(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories").getString(0));
+  			} else {
+  				books[i].setKategori("Uncategorized");
+  			}
+
+
   			//gambar
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
