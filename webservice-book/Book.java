@@ -15,7 +15,7 @@ public class Book implements Serializable {
   private float rating;
   private int votescount;
   private String kategori;
-  private int harga;
+  private float harga;
 
   /**
   * @return int return the id
@@ -121,11 +121,11 @@ public class Book implements Serializable {
     return kategori;
   }
 
-  public void setHarga(int harga){
+  public void setHarga(float harga){
     this.harga = harga;
   }
 
-  public int getHarga(){
+  public float getHarga(){
     return harga;
   }
 

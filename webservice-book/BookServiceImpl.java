@@ -62,11 +62,10 @@ public class BookServiceImpl implements BookService {
 						"jdbc:mysql://localhost:3306/bookservice",
 						"root",""
 					);   
-					PreparedStatement preparedStmt = 
-					conDB.prepareStatement(query);
+					PreparedStatement preparedStmt = conDB.prepareStatement(query);
 					preparedStmt.setString(1, b.getId());
 					preparedStmt.setString(2, b.getKategori());
-					preparedStmt.setInt(3, t.getJumlah()/b.getHarga());
+					preparedStmt.setFloat(3, t.getJumlah()/b.getHarga());
 					preparedStmt.execute();
 					conDB.close();  
 				}catch(Exception e){System.out.println(e);}				
@@ -121,6 +120,7 @@ public class BookServiceImpl implements BookService {
   			books[i].setId(json.getJSONArray("items").getJSONObject(i).getString("id"));
   			books[i].setJudul(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("title"));
   			
+  			//penulis
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("authors")) {
 				JSONArray authors_array = json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("authors");
 	  			String[] authors = new String[authors_array.length()];
@@ -134,29 +134,52 @@ public class BookServiceImpl implements BookService {
   				books[i].setPenulis(anon);
   			}
   			
+  			//deskripsi
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("description")) {
  				books[i].setSinopsis(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getString("description"));
   			} else {
   				books[i].setSinopsis("No description");
   			}
   			
+  			//kategori
+  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("categories")) {
+ 				books[i].setKategori(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories").getString(0));
+  			} else {
+  				books[i].setKategori("Uncategorized");
+  			}
+
+
+  			//gambar
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
   			} else {
   				books[i].setGambar("No Image");
   			}
 
+  			//harga
+			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("saleInfo").has("listPrice")) {
+  				books[i].setHarga(json.getJSONArray("items").getJSONObject(i).getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount"));
+  			} else {
+  				books[i].setHarga(0);
+  			}
+
+  			//votes
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("ratingsCount")) {
   				books[i].setVotesCount(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getInt("ratingsCount"));	
   			} else {
   				books[i].setVotesCount(0);
   			}
 
- 				if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
+  			//average rating
+ 			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
   				books[i].setRating(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getFloat("averageRating"));	
   			} else {
   				books[i].setRating(0);
-  			}			
+  			}
+
+  			//kategori
+  			
+
   		}
   		return books;
   }
