@@ -42,9 +42,27 @@
             </form>
             <p>{{probook.searchTerm}}<p>
             <div>
-              <li ng-repeat="book in probook.books">
-                <span>{{book.judul}}</span>
-              </li>
+              <div ng-repeat="book in probook.books">
+                <tr>
+                    <td class='picture vertical-align-top'>
+                        <img class='img-book' ng-src= "{{book.gambar}}">
+                    </td>
+                    <td class='book-data text-align-left vertical-align-top'>
+                        <p class='title-book text-orange'>{{book.judul}}</p>
+                        <p class='author-book'>{{book.penulis}} - " . number_format({{book.rating}},1) . "/5.0 ({{book.votesCount}}} votes)</p>
+                        <p class='desc-book'>{{book.sinopsis}}</p>
+                    </td>
+                </tr>
+                <tr class='button-detail text-align-right'>
+                    <td colspan='2'>
+                        <form method='get' action='order.php'>
+                            <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
+                            <input class='submit-button text-white' type='submit' value='Detail'>
+                        </form>
+                    </td>
+                </tr>
+
+              </div>
             </div>            
         </div>
     </div>  
