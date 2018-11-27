@@ -169,6 +169,9 @@ public class BookServiceImpl implements BookService {
   				books[i].setRating(0);
   			}
 
+  			//kategori
+  			
+
   		}
   		return books;
   }
