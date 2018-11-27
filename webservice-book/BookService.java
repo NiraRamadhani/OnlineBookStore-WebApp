@@ -19,7 +19,7 @@ import com.probooks.jaxws.beans.Transaksi;
 public interface BookService {
 	
 	@WebMethod
-	public boolean pembelian(Transaksi t, Book b) throws IOException;
+	public boolean pembelian(String idbook, int quantity, String nomorPengirim) throws IOException;
 
   @WebMethod
 	public Book[] searchBook(String term) throws IOException;

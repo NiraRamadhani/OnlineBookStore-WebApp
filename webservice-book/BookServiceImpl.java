@@ -19,10 +19,38 @@ import org.json.JSONArray;
 public class BookServiceImpl implements BookService {
 
   @Override
-  public boolean pembelian(Transaksi t, Book b) throws IOException{
+  public boolean pembelian(String idbook, int quantity, String nomorPengirim) throws IOException{
+		//GET BOOK DETAILS
+		Book b = new Book();
+		try{  
+			String query = String.format("SELECT * FROM books WHERE bookid='%s'", idbook);
+      Class.forName("com.mysql.cj.jdbc.Driver");  
+      Connection conDB = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/bookservice",
+				"root",""
+			);   
+      Statement stmt = conDB.createStatement();  
+      ResultSet rs = stmt.executeQuery(query);
+      while(rs.next()){
+				String[] authors = new String[1];
+				authors[0] = rs.getString(3);
+				b.setId(rs.getString(1));
+				b.setJudul(rs.getString(2));
+				b.setPenulis(authors);
+				b.setGambar(rs.getString(4));
+				b.setSinopsis(rs.getString(5));
+				b.setRating(rs.getFloat(6));
+				b.setVotesCount(rs.getInt(7));
+				b.setKategori(rs.getString(8));
+				b.setHarga(rs.getFloat(9));
+			}
+      conDB.close();  
+    }catch(Exception e){System.out.println(e);}
+	
+		//SEND REQUEST TO BANK
     String USER_AGENT = "Mozilla/5.0";
     String POST_URL = "http://localhost:3000/transfer";
-    String POST_PARAMS = "nomorPengirim="+t.getNomorPengirim()+"&nomorPenerima="+t.getNomorPenerima()+"&jumlah="+t.getJumlah();
+    String POST_PARAMS = "nomorPengirim=" + nomorPengirim + "&nomorPenerima=" + 13516999 + "&jumlah="+ quantity * b.getHarga();
     URL obj = new URL(POST_URL);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
@@ -65,7 +93,7 @@ public class BookServiceImpl implements BookService {
 					PreparedStatement preparedStmt = conDB.prepareStatement(query);
 					preparedStmt.setString(1, b.getId());
 					preparedStmt.setString(2, b.getKategori());
-					preparedStmt.setFloat(3, t.getJumlah()/b.getHarga());
+					preparedStmt.setFloat(3, quantity);
 					preparedStmt.execute();
 					conDB.close();  
 				}catch(Exception e){System.out.println(e);}				
