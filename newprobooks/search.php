@@ -9,6 +9,7 @@
   <link rel="stylesheet" type="text/css" href="public/css/navbar.css">
   <link rel="stylesheet" type="text/css" href="public/css/body.css">
   <link rel="stylesheet" type="text/css" href="public/css/search-books.css">
+  <link rel="stylesheet" type="text/css" href="public/css/search-result.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
   <script src="main.js"></script>
 </head>
@@ -59,14 +60,18 @@
                 </td>
             </tr>
         </table>  
-          <div class="container">
-            <table class="full-width">
-              <tr ng-repeat="book in probook.books">
+        </div>
+          <!-- <div class="container"> -->
+          <div class="result-row" ng-repeat="book in probook.books">  
+          <table class="search-result" class="full-width">
+              <tr>
                 <td class='picture vertical-align-top'>
-                  <img ng-src= "{{book.gambar}}">
+                  <img ng-src= "{{book.gambar}}" class='img-book'>
                 </td>
                 <td class='book-data text-align-left vertical-align-top'>
                   <p class='title-book text-orange'>{{book.judul}}</p>
+                  <p class='author-book' *ng-repeat="penulis inbook.penulis">
+                  </p>
                   <p class='author-book'>
                     {{book.penulis}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
                   </p>
@@ -75,13 +80,14 @@
               </tr>
               <tr class='button-detail text-align-right'>
                 <td colspan='2'>
-                  <form method='get' action='order.php'>
+                  <ng-form method='get' action='order.php'>
                       <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
                       <input class='submit-button text-white' type='submit' value='Detail'>
-                    </form>
+                    </ng-form>
                 </td>
               </tr>                
             </table>
+            </div>
           </div>
         </div>
       </div>

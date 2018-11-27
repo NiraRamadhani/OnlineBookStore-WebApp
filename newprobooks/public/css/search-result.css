@@ -43,7 +43,7 @@ h2 {
 }
 
 #found-count p {
-    margin-bottom: 11px;
+    margin-bottom: 24px;
     font-size : 1.2em;
 }
 
@@ -56,6 +56,10 @@ img.img-book {
 td.picture {
     width:100px;
     padding: 0px;
+}
+
+td.book-data {
+    width: 500px;
 }
 
 td.book-data p {
@@ -117,4 +121,9 @@ td {
 
 .img-book {
     border: 1px solid #464646;
+}
+
+.search-result{
+    margin-left:30px;
+    margin-right:30px;
 }
