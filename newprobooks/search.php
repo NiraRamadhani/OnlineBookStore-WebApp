@@ -2,10 +2,10 @@
 <html ng-app="probookApp">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
   <title>Page Title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
   <link rel="stylesheet" type="text/css" href="public/css/navbar.css">
   <link rel="stylesheet" type="text/css" href="public/css/body.css">
   <link rel="stylesheet" type="text/css" href="public/css/search-books.css">
@@ -32,43 +32,44 @@
     </div>
   <!-- CONTENT -->
     <div class="content" ng-controller="ProbookController as probook">
-        <div class="container text-align-left">
-            <h2 class="text-orange">Search Book</h2>
+      <div class="container text-align-left">
+          <h2 class="text-orange">Search Book</h2>
+      </div>
+      <div class="container text-align-right">
+        <form name="search" ng-submit="probook.search()">
+          <input type="text" ng-model="probook.searchTerm" id="search-box" class="input" size="30" placeholder="Search your book here">
+          <input type="submit" value="Search" class="input text-white" id="submit-button">
+        </form>
+      </div>  
+      <div class="content">
+        <div class="container text-align-left" ng-if="probook.books.length > 0">
+          <h1 class="text-orange">Search Result</h1>
+          <div class="container">
+            <table class="full-width">
+              <tr ng-repeat="book in probook.books">
+                <td class='picture vertical-align-top'>
+                  <img class='img-book' ng-src= "{{book.gambar}}">
+                </td>
+                <td class='book-data text-align-left vertical-align-top'>
+                  <p class='title-book text-orange'>{{book.judul}}</p>
+                  <p class='author-book'>
+                    {{book.penulis}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
+                  </p>
+                  <p class='desc-book'>{{book.sinopsis}}</p>
+                </td>
+              </tr>
+              <tr class='button-detail text-align-right'>
+                <td colspan='2'>
+                  <form method='get' action='order.php'>
+                      <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
+                      <input class='submit-button text-white' type='submit' value='Detail'>
+                    </form>
+                </td>
+              </tr>                
+            </table>
+          </div>
         </div>
-        <div class="container text-align-left">
-            <form name="search" ng-submit="probook.search()">
-                <input type="text" ng-model="probook.searchTerm" id="search-box" class="input" size="30" placeholder="Search your book here">
-                <input type="submit" value="Search" class="input text-white" id="submit-button">
-            </form>
-        
-            <div>
-              <div ng-repeat="book in probook.books">
-                <div class="container text-align-left">
-                  <h1 class="text-orange">Search Result</h1>
-                </div>
-
-                <tr>
-                    <td class='picture vertical-align-top'>
-                        <img class='img-book' ng-src= "{{book.gambar}}">
-                    </td>
-                    <td class='book-data text-align-right vertical-align-top'>
-                        <p class='title-book text-orange'>{{book.judul}}</p>
-                        <p class='author-book'>{{book.penulis}}- {{book.rating}}/5.0 ({{book.votesCount}} votes)</p>
-                        <p class='desc-book'>{{book.sinopsis}}</p>
-                    </td>
-                </tr>
-                <tr class='button-detail text-align-right'>
-                    <td colspan='2'>
-                        <form method='get' action='order.php'>
-                            <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
-                            <input class='submit-button text-white' type='submit' value='Detail'>
-                        </form>
-                    </td>
-                </tr>
-
-              </div>
-            </div>            
-        </div>
+      </div>
     </div>  
 </body>
 </html>

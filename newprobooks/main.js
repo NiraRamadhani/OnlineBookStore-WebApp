@@ -5,12 +5,12 @@ angular.module('probookApp', [])
     probook.searchTerm = "";
 
     probook.search = function(){
-      while (probook.books.length > 0){
-        probook.books.pop();
-      }
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function(){
         if (this.readyState == 4 && this.status == 200) {
+          while (probook.books.length > 0){
+            probook.books.pop();
+          }
           console.log(this.responseText);
           json = JSON.parse(this.responseText);
           angular.forEach(json.item, function(book){
