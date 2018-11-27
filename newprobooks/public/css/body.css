@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+body {
+	margin: 0px;
+    width: 600px;
+    height: 100vh;
+}
+
+.float-right {
+    float: right;
+}
+
+.text-yellow {
+    color: #F2D800;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-orange {
+    color: #F26600;
+}
+
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.vertical-align-bottom {
+    vertical-align: bottom;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}

@@ -2,8 +2,9 @@ angular.module('probookApp', [])
   .controller('ProbookController', function($scope) {
     var probook = this;
     probook.books = []
+    probook.searchTerm = "";
 
-    probook.search = function(judul){
+    probook.search = function(){
       while (probook.books.length > 0){
         probook.books.pop();
       }
@@ -14,12 +15,13 @@ angular.module('probookApp', [])
           angular.forEach(json.item, function(book){
             probook.books.push(book);
           });
+          console.log(probook.searchTerm);
           console.log('done');
           $scope.$apply();
          }
         };
       xhttp.open("POST", "./soapclient.php", true);
       xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhttp.send("judul="+judul);
+      xhttp.send("judul="+probook.searchTerm);
     }
   });
