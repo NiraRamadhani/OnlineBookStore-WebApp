@@ -21,13 +21,13 @@ public interface BookService {
 	@WebMethod
 	public boolean pembelian(String idbook, int quantity, String nomorPengirim) throws IOException;
 
-  @WebMethod
+  	@WebMethod
 	public Book[] searchBook(String term) throws IOException;
 
 	@WebMethod
-	public String getDetail(String id);
+	public Book getDetail(String id) throws IOException;
 
-	@WebMethod
+		@WebMethod
 	public String getRecommendation(String kategory);
 
 }
