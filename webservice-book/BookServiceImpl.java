@@ -62,7 +62,8 @@ public class BookServiceImpl implements BookService {
 						"jdbc:mysql://localhost:3306/bookservice",
 						"root",""
 					);   
-					PreparedStatement preparedStmt = conDB.prepareStatement(query);
+					PreparedStatement preparedStmt = 
+					conDB.prepareStatement(query);
 					preparedStmt.setString(1, b.getId());
 					preparedStmt.setString(2, b.getKategori());
 					preparedStmt.setInt(3, t.getJumlah()/b.getHarga());
