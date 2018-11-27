@@ -35,21 +35,25 @@
         <div class="container text-align-left">
             <h2 class="text-orange">Search Book</h2>
         </div>
-        <div class="container text-align-right">
+        <div class="container text-align-left">
             <form name="search" ng-submit="probook.search()">
                 <input type="text" ng-model="probook.searchTerm" id="search-box" class="input" size="30" placeholder="Search your book here">
                 <input type="submit" value="Search" class="input text-white" id="submit-button">
             </form>
-            <p>{{probook.searchTerm}}<p>
+        
             <div>
               <div ng-repeat="book in probook.books">
+                <div class="container text-align-left">
+                  <h1 class="text-orange">Search Result</h1>
+                </div>
+
                 <tr>
                     <td class='picture vertical-align-top'>
                         <img class='img-book' ng-src= "{{book.gambar}}">
                     </td>
-                    <td class='book-data text-align-left vertical-align-top'>
+                    <td class='book-data text-align-right vertical-align-top'>
                         <p class='title-book text-orange'>{{book.judul}}</p>
-                        <p class='author-book'>{{book.penulis}} - " . number_format({{book.rating}},1) . "/5.0 ({{book.votesCount}}} votes)</p>
+                        <p class='author-book'>{{book.penulis}}- {{book.rating}}/5.0 ({{book.votesCount}} votes)</p>
                         <p class='desc-book'>{{book.sinopsis}}</p>
                     </td>
                 </tr>

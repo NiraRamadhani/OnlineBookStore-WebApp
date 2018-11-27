@@ -12,6 +12,7 @@ body {
     text-align: center;
 }
 
+
 .full-width {
     width: 100%;
 }
@@ -49,7 +50,8 @@ h2 {
 img.img-book {
     height: 100px;
     width: 100px;
-    object-fit: contain;
+    margin-top: 50px;
+    padding-top: 50px;
 }
 
 td.picture {
@@ -97,6 +99,10 @@ td.book-data p.author-book {
 
 .title-content {
     margin-bottom: 15px;
+}
+
+.book-price {
+    padding: 0px;
 }
 
 table {
