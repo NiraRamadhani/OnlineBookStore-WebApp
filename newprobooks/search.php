@@ -40,6 +40,12 @@
           <input type="text" ng-model="probook.searchTerm" id="search-box" class="input" size="30" placeholder="Search your book here">
           <input type="submit" value="Search" class="input text-white" id="submit-button">
         </form>
+
+        <div class="loader" style="display: none" id = "loader">
+          
+        </div>
+
+      
       </div>  
       <div class="content">
         <div class="container text-align-left" ng-if="probook.books.length > 0">
