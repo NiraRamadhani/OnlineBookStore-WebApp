@@ -177,3 +177,12 @@ table td {
     appearance: none;
     padding: 2px 3px;
 }
+
+.kategori {
+    font-weight: 900;
+}
+
+.harga {
+    color: tomato;
+    font-weight: 900;
+}

@@ -50,20 +50,33 @@
 
             <div class="order">
                 <?php
+                    // CALL SOAP API
+                    $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+                    $params = array(
+                        "arg0" => $bookid
+                    );
+                    $response = $client->__soapCall("getDetail", $params);
+                    $detail = json_encode($response);
+                    $detail = json_decode($detail, true);
 
+
+                    // CONNECT TO PROBOOKS DATABASE
                     $con = mysqli_connect("localhost","root","","probooks");
 
                     if (mysqli_connect_errno()) {
                         echo "Failed to connect to MySQL: " . mysqli_connect_error();
                     };
 
+                    // Get books detail
                     $sql_book = "SELECT title, author, description, image FROM book WHERE id = \"$bookid\"; ";
                     $res_book = mysqli_query($con, $sql_book);
                     $row_book = mysqli_fetch_assoc($res_book);
                     
+                    // Get book review
                     $sql_review = " SELECT bookid, content, round(rating, 1) as rating, username, image FROM (ordering JOIN review ON (ordering.id = orderid)) JOIN user USING (username) WHERE bookid = \"$bookid\" ORDER BY review.id DESC; ";
                     $res_review = mysqli_query($con, $sql_review);
 
+                    // Get book rating
                     $sql_rating = "SELECT coalesce(round(avg(rating),1), 0) as rate FROM review JOIN ordering ON (ordering.id = orderid) WHERE bookid = \"$bookid\"; ";
                     $res_rating = mysqli_query($con, $sql_rating);
                     $row_rating = mysqli_fetch_assoc($res_rating);
@@ -71,6 +84,7 @@
                     $star_yellow = "star-active.png";
                     $star_black = "star-inactive.png";
 
+                    // Get Number of Transaction
                     $qry_num_transaction = "SELECT MAX(ID) as id FROM ordering;";
                     $result = mysqli_fetch_assoc(mysqli_query($con, $qry_num_transaction));
                     $num = $result['id'] + 1;
@@ -99,26 +113,30 @@
                         <table class='desc-book'>
                         <tr>
                             <td>
-                                <h2 class='text-orange'>{$row_book['title']}</h2>
-                                <div class='author'>{$row_book['author']}</div>
-                                <div class='desc'>{$row_book['description']}</div>
+                                <h2 class='text-orange'>{$detail['judul']}</h2>
+                                <div class='author'>{$detail['penulis']}</div>
+                                <div class='desc'>{$detail['sinopsis']}</div><br>
+                                <a class='kategori'> Kategori: </a> {$detail['kategori']} <br>
+                                <a class='harga'> Harga: Rp {$detail['harga']} </a><br>
+                                
+                                
                             </td>
                             <td class='picture'>
-                                <img src='{$row_book['image']}' class='img-right'>
+                                <img src='{$detail['gambar']}' class='img-right'>
                                 <br>
                     ";
 
-                    for ($x = 0; $x < floor($row_rating['rate']); $x++) {
+                    for ($x = 0; $x < floor($detail['rating']); $x++) {
                         echo "<img src='public/img/{$star_yellow}' class='star'>";
                     }
 
-                    for ($x = floor($row_rating['rate']); $x < 5; $x++) {
+                    for ($x = floor($detail['rating']); $x < 5; $x++) {
                         echo "<img src='public/img/{$star_black}' class='star'>";
                     }
 
                     echo "   
                                 <br>
-                                <center><b>{$row_rating['rate']} / 5.0</b></center>
+                                <center><b>{$detail['rating']} / 5.0</b></center>
                             </td>
                         </tr>
                         </table>
@@ -178,6 +196,21 @@
                     }
                 ?>
                 <script>
+                   function getDetail(id){
+                        document.getElementById("loader").style.display = "block";
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function(){
+                            if (this.readyState == 4 && this.status == 200) {
+                                console.log(this.responseText);
+                                probooks.details = JSON.parse(this.responseText);
+                                console.log('done');
+                                document.getElementById("loader").style.display = "none";
+                                }
+                            };
+                        xhttp.open("POST", "./soapclient.php", true);
+                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhttp.send("id="+id);
+                    }
 
                     function order(id) {
                         

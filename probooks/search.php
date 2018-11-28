@@ -36,7 +36,7 @@ if (!isset($username) or !isset($access_token) or !isset($id)) {
   <!-- NAVBAR -->
     <div id="nav">
         <ul>
-            <li id="li-pro-book"><a href="search-books.php" id="pro-book">
+            <li id="li-pro-book"><a href="search.php" id="pro-book">
                 <span class="text-yellow">Pro</span><span class="text-white">-Book</span>
             </a></li>
             <li id="li-username"><a href="profile.php" id="username" class="text-white">Hi, <?php echo "$username"; ?></a></li>
@@ -45,7 +45,7 @@ if (!isset($username) or !isset($access_token) or !isset($id)) {
             </a></li>
         </ul>
         <ul id="menu">
-            <li><a class="active text-white" href="search-books.php">Browse</a></li>
+            <li><a class="active text-white" href="search.php">Browse</a></li>
             <li><a class="text-white" href="history.php">History</a></li>
             <li><a class="text-white" href="profile.php">Profile</a></li>
         </ul>
@@ -97,10 +97,10 @@ if (!isset($username) or !isset($access_token) or !isset($id)) {
               </tr>
               <tr class='button-detail text-align-right'>
                 <td colspan='2'>
-                  <ng-form method='get' action='order.php'>
+                  <form method='get' action='order.php'>
                       <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
                       <input class='submit-button text-white' type='submit' value='Detail'>
-                    </ng-form>
+                    </form>
                 </td>
               </tr>                
             </table>
