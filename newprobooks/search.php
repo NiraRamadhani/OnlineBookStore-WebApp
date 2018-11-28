@@ -41,18 +41,37 @@
           <input type="text" ng-model="probook.searchTerm" id="search-box" class="input" size="30" placeholder="Search your book here">
           <input type="submit" value="Search" class="input text-white" id="submit-button">
         </form>
+
+        <div class="loader" style="display: none" id = "loader">
+          
+        </div>
+
+      
       </div>  
       <div class="content">
         <div class="container text-align-left" ng-if="probook.books.length > 0">
-          <h1 class="text-orange">Search Result</h1>
-          <div class="container">
-            <table class="full-width">
-              <tr ng-repeat="book in probook.books">
+        <table class="full-width">
+            <tr>
+                <td id="search-title">
+                    <h1 class="text-orange">Search Result</h2>
+                </td>
+                <td id="found-count" class="text-align-right vertical-align-bottom">
+                    <p>Found <span id="num-rows">{{probook.books.length}}</span> result(s)</p>
+                </td>
+            </tr>
+        </table>  
+        </div>
+          <!-- <div class="container"> -->
+          <div class="result-row" ng-repeat="book in probook.books">  
+          <table class="search-result" class="full-width">
+              <tr>
                 <td class='picture vertical-align-top'>
-                  <img class='img-book' ng-src= "{{book.gambar}}">
+                  <img ng-src= "{{book.gambar}}" class='img-book'>
                 </td>
                 <td class='book-data text-align-left vertical-align-top'>
                   <p class='title-book text-orange'>{{book.judul}}</p>
+                  <p class='author-book' *ng-repeat="penulis inbook.penulis">
+                  </p>
                   <p class='author-book'>
                     {{book.penulis}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
                   </p>
@@ -61,13 +80,14 @@
               </tr>
               <tr class='button-detail text-align-right'>
                 <td colspan='2'>
-                  <form method='get' action='order.php'>
+                  <ng-form method='get' action='order.php'>
                       <input type='hidden' id='book-id' name='bookid' value={{book.id}}>
                       <input class='submit-button text-white' type='submit' value='Detail'>
-                    </form>
+                    </ng-form>
                 </td>
               </tr>                
             </table>
+            </div>
           </div>
         </div>
       </div>

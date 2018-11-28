@@ -179,7 +179,7 @@ public class BookServiceImpl implements BookService {
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
   			} else {
-  				books[i].setGambar("No Image");
+  				books[i].setGambar("public/img/default-cover.jpg");
   			}
 
   			//harga
