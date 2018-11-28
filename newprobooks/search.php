@@ -9,6 +9,7 @@
   <link rel="stylesheet" type="text/css" href="public/css/navbar.css">
   <link rel="stylesheet" type="text/css" href="public/css/body.css">
   <link rel="stylesheet" type="text/css" href="public/css/search-books.css">
+  <link rel="stylesheet" type="text/css" href="public/css/search-result.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
   <script src="main.js"></script>
 </head>
