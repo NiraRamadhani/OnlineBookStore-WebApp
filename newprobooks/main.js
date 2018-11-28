@@ -4,6 +4,14 @@ angular.module('probookApp', [])
     probook.books = []
     probook.searchTerm = "";
 
+    $scope.printAuthor = function(obj) {
+      if (typeof obj === "string") {
+        return obj;
+      } else {
+        return obj.join(", ");;
+      }
+    }
+
     probook.search = function(){
       while (probook.books.length > 0){
             probook.books.pop();
@@ -28,4 +36,5 @@ angular.module('probookApp', [])
       xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xhttp.send("judul="+probook.searchTerm);
     }
-  });
+  })
+  

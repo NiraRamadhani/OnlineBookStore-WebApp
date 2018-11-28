@@ -70,10 +70,8 @@
                 </td>
                 <td class='book-data text-align-left vertical-align-top'>
                   <p class='title-book text-orange'>{{book.judul}}</p>
-                  <p class='author-book' *ng-repeat="penulis inbook.penulis">
-                  </p>
                   <p class='author-book'>
-                    {{book.penulis}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
+                  {{printAuthor(book.penulis)}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
                   </p>
                   <p class='desc-book'>{{book.sinopsis}}</p>
                 </td>
