@@ -1,7 +1,7 @@
 <?php
     
     if (isset($_COOKIE['username']) and isset($_COOKIE['access_token']) and isset($_COOKIE['id'])) {
-        header('Location: search-books.php');  
+        header('Location: search.php');  
     }
         
 ?>

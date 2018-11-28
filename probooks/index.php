@@ -5,7 +5,7 @@ $username = $_COOKIE['username'];
 
 if (isset($username)) {    
     //connect to database
-    header('Location: search-books.php');
+    header('Location: search.php');
 } else {
     //redirect to login page
     header('Location: login.php');

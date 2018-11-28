@@ -1,7 +1,7 @@
 <?php
 
     if (isset($_COOKIE['username']) and isset($_COOKIE['access_token']) and isset($_COOKIE['id'])) {
-        header('Location: search-books.php');  
+        header('Location: search.php');  
     }
 
     $con = mysqli_connect("localhost","root","","probooks");
@@ -23,7 +23,7 @@
             setcookie('username', $_POST['username'], false, '/');
             setcookie('access_token', $access_token, false, '/');
             setcookie('id', $access_token.$_POST['username'], time() + 3600, '/');
-            header('Location: search-books.php');
+            header('Location: search.php');
         } else {
             echo '<script>alert("Wrong username or password");</script>';
         }                   
