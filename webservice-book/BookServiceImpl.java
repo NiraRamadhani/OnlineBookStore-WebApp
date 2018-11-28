@@ -32,17 +32,9 @@ public class BookServiceImpl implements BookService {
       Statement stmt = conDB.createStatement();  
       ResultSet rs = stmt.executeQuery(query);
       while(rs.next()){
-				String[] authors = new String[1];
-				authors[0] = rs.getString(3);
 				b.setId(rs.getString(1));
-				b.setJudul(rs.getString(2));
-				b.setPenulis(authors);
-				b.setGambar(rs.getString(4));
-				b.setSinopsis(rs.getString(5));
-				b.setRating(rs.getFloat(6));
-				b.setVotesCount(rs.getInt(7));
-				b.setKategori(rs.getString(8));
-				b.setHarga(rs.getFloat(9));
+				b.setKategori(rs.getString(2));
+				b.setHarga(rs.getFloat(3));
 			}
       conDB.close();  
     }catch(Exception e){System.out.println(e);}
@@ -129,10 +121,6 @@ public class BookServiceImpl implements BookService {
 				response.append(inputLine);
 			}
 			in.close();
-
-			// print result
-			//System.out.println("Result: ");
-			//System.out.println(response.toString());
 		} else {
 			System.out.println("GET request not worked");
 		}
@@ -179,7 +167,7 @@ public class BookServiceImpl implements BookService {
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
   			} else {
-  				books[i].setGambar("public/img/default-cover.jpg");
+  				books[i].setGambar("No Image");
   			}
 
   			//harga
