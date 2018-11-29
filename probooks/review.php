@@ -14,12 +14,11 @@ if ($id == $access_token.$username) {
         if (!$conn) {
             die("Connection failed: " . $conn->connect_error);
         }
+        // $query = "SELECT book.id, title, author, image
+        //         FROM book
+        //         WHERE book.id=$book";
 
-        $query = "SELECT book.id, title, author, image
-                FROM book
-                WHERE book.id=$book";
-
-        $result = mysqli_query($conn, $query);
+        // $result = mysqli_query($conn, $query);
 
     } else {
         //redirect to search-books page
@@ -58,10 +57,17 @@ if ($id == $access_token.$username) {
     <body>
         <div class="book-container">
             <?php 
-                $row = $result->fetch_assoc();
-                echo"<img class='book-img' src='{$row['image']}'>
-                <div class='book-title'>{$row['title']} </div>
-                <div class='book-author'>{$row['author']}</div>";
+                // CALL SOAP API
+                $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+                $params = array(
+                    "arg0" => $book
+                );
+                $response = $client->__soapCall("getDetail", $params);
+                $detail = json_encode($response);
+                $detail = json_decode($detail, true);
+                echo"<img class='book-img' src='{$detail['gambar']}'>
+                <div class='book-title'>{$detail['judul']} </div>
+                <div class='book-author'>{$detail['penulis']}</div>";
             ?>
         </div>
         

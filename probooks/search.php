@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html ng-app="probookApp">
 <?php
 
 // check whether user is already logged in or not
@@ -18,7 +16,8 @@ if (!isset($username) or !isset($access_token) or !isset($id)) {
     header('Location: login.php');
 }
 ?>
-
+<!DOCTYPE html>
+<html ng-app="probookApp">
 <head>
   <meta charset="utf-8" />
   <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->

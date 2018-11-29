@@ -13,8 +13,8 @@ if ($id == $access_token.$username) {
             die("Connection failed: " . $conn->connect_error);
         }
     
-    $query = "SELECT ordering.id, bookid, username, title, author, description, image, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
-        FROM ordering join book on bookid=book.id 
+    $query = "SELECT ordering.id, bookid, username, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
+        FROM ordering
 	    left join review on ordering.id=review.orderid
         WHERE username=\"$username\"
         ORDER BY id desc";
@@ -55,11 +55,20 @@ if ($id == $access_token.$username) {
         <div id="history-content">
             <?php 
                 while($row = $result->fetch_assoc()) {
+                    // CALL SOAP API
+                    $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+                    $params = array(
+                        "arg0" => $row['bookid']
+                    );
+                    $response = $client->__soapCall("getDetail", $params);
+                    $detail = json_encode($response);
+                    $detail = json_decode($detail, true);
+
                     if ($row['reviewed'] == '1') {
                         echo"<div class='flex-container'>
                             <div class='book-info'> 
-                                <img class='book-pict' src={$row['image']}>
-                                <p class='book-title'>{$row['title']} </p>
+                                <img class='book-pict' src={$detail["gambar"]}>
+                                <p class='book-title'>{$detail["judul"]} </p>
                                 <p class='book-content'>Jumlah: {$row['count']} <br>
                                 Anda sudah memberikan review <br>
                             </div>
@@ -75,8 +84,8 @@ if ($id == $access_token.$username) {
                     } else { 
                         echo"<div class='flex-container'>
                             <div class='book-info'> 
-                                <img class='book-pict' src={$row['image']}>
-                                <p class='book-title'>{$row['title']} </p>
+                                <img class='book-pict' src={$detail["gambar"]}>
+                                <p class='book-title'>{$detail["judul"]} </p>
                                 <p class='book-content'>Jumlah: {$row['count']} <br>
                                 Belum direview<br>
                             </div>

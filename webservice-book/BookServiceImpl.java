@@ -235,63 +235,82 @@ public class BookServiceImpl implements BookService {
 		String sinopsis;
 		
 		// Penulis
-		JSONArray authors_array = book_json.getJSONObject("volumeInfo").getJSONArray("authors");
-		String[] penulis = new String[authors_array.length()];
-		for (int i = 0; i < authors_array.length(); i++) {
-			penulis[i] = authors_array.getString(i);
+		try {
+			String[] penulis;
+			if (book_json.getJSONObject("volumeInfo").has("authors")) {
+				JSONArray authors_array = book_json.getJSONObject("volumeInfo").getJSONArray("authors");
+				penulis = new String[authors_array.length()];
+				for (int i = 0; i < authors_array.length(); i++) {
+					penulis[i] = authors_array.getString(i);
+				}
+			} else {
+				penulis = new String[1];
+				penulis[0] = "Anonymous";
+			}
+			// Gambar
+			if (book_json.getJSONObject("volumeInfo").has("imageLinks")) {
+				if (book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").has("small")) {		
+					gambar = book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("small");
+				} else if (book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").has("thumbnail")) {		
+					gambar = book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
+				} else {
+					gambar = "public/img/default-cover.jpg";
+				}
+			} else {
+				gambar = "public/img/default-cover.jpg";
+			}
+
+			// Harga
+			if (book_json.getJSONObject("saleInfo").has("listPrice")) {
+				harga = book_json.getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount");
+			} else {
+				harga = 0;
+			}
+
+			// Average Rating
+			if (book_json.getJSONObject("volumeInfo").has("averageRating")) {
+				rating = book_json.getJSONObject("volumeInfo").getFloat("averageRating");
+			} else {
+				rating = 0;
+			}
+
+			// Sinopsis
+			if (book_json.getJSONObject("volumeInfo").has("description")) {
+				sinopsis = book_json.getJSONObject("volumeInfo").getString("description");
+			} else {
+				sinopsis = "No description";
+			}
+
+			// Kategori
+			if (book_json.getJSONObject("volumeInfo").has("categories")) {
+				kategori = book_json.getJSONObject("volumeInfo").getJSONArray("categories").getString(0);
+			} else {
+				kategori = "Uncategorized";
+			}
+
+			// Set Value of Detail
+			detail.setId(id);
+			detail.setJudul(judul);
+			detail.setPenulis(penulis);
+			detail.setGambar(gambar);
+			detail.setRating(rating);
+			detail.setHarga(harga);
+			detail.setKategori(kategori);
+			detail.setSinopsis(sinopsis);
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-
-		// Gambar
-		if (book_json.getJSONObject("volumeInfo").has("imageLinks")) {
-			gambar = book_json.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("small");
-		} else {
-			gambar = "No Image";
-		}
-
-		// Harga
-		if (book_json.getJSONObject("saleInfo").has("listPrice")) {
-			harga = book_json.getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount");
-		} else {
-			harga = 0;
-		}
-
-		// Average Rating
-		if (book_json.getJSONObject("volumeInfo").has("averageRating")) {
-			rating = book_json.getJSONObject("volumeInfo").getFloat("averageRating");	
-		} else {
-			rating = 0;
-		}
-
-		// Sinopsis
-		if (book_json.getJSONObject("volumeInfo").has("description")) {
-			sinopsis = book_json.getJSONObject("volumeInfo").getString("description");
-		} else {
-			sinopsis = "No description";
-		}
-
-		// Kategori
-		if (book_json.getJSONObject("volumeInfo").has("categories")) {
-			kategori = book_json.getJSONObject("volumeInfo").getJSONArray("categories").getString(0);
-		} else {
-			kategori = "Uncategorized";
-		}
-
-		// Set Value of Detail
-		detail.setId(id);
-		detail.setJudul(judul);
-		detail.setPenulis(penulis);
-		detail.setGambar(gambar);
-		detail.setRating(rating);
-		detail.setHarga(harga);
-		detail.setKategori(kategori);
-		detail.setSinopsis(sinopsis);
-
+		
 		return detail;
 	};
 
 	@Override
 	public String getRecommendation(String kategori){
 		String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+		// SELECT distinct idbook, totalpenjualan 
+		// FROM book.penjualan natural join book.kategori 
+		// WHERE kat LIKE "%Fiction%" ORDER BY totalpenjualan desc
+		// LIMIT 1; 
 		int orderid;
 		String idbook = "0";
 		int total;
@@ -309,7 +328,7 @@ public class BookServiceImpl implements BookService {
 				kategori = rs.getString(3);
 				total = rs.getInt(4);
 				System.out.println(orderid + "  " + idbook + "  " + kategori + " " + total);
-			}  
+			}
       con.close();  
     }catch(Exception e){System.out.println(e);}
 		return idbook;

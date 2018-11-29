@@ -1,5 +1,4 @@
 <?php
-    
     $username = $_COOKIE['username'];
     $access_token = $_COOKIE['access_token'];
     $id = $_COOKIE['id'];
@@ -67,11 +66,6 @@
                         echo "Failed to connect to MySQL: " . mysqli_connect_error();
                     };
 
-                    // Get books detail
-                    $sql_book = "SELECT title, author, description, image FROM book WHERE id = \"$bookid\"; ";
-                    $res_book = mysqli_query($con, $sql_book);
-                    $row_book = mysqli_fetch_assoc($res_book);
-                    
                     // Get book review
                     $sql_review = " SELECT bookid, content, round(rating, 1) as rating, username, image FROM (ordering JOIN review ON (ordering.id = orderid)) JOIN user USING (username) WHERE bookid = \"$bookid\" ORDER BY review.id DESC; ";
                     $res_review = mysqli_query($con, $sql_review);
@@ -84,6 +78,7 @@
                     $star_yellow = "star-active.png";
                     $star_black = "star-inactive.png";
 
+                    // MASIH YANG LAMA INI
                     // Get Number of Transaction
                     $qry_num_transaction = "SELECT MAX(ID) as id FROM ordering;";
                     $result = mysqli_fetch_assoc(mysqli_query($con, $qry_num_transaction));
@@ -118,8 +113,6 @@
                                 <div class='desc'>{$detail['sinopsis']}</div><br>
                                 <a class='kategori'> Kategori: </a> {$detail['kategori']} <br>
                                 <a class='harga'> Harga: Rp {$detail['harga']} </a><br>
-                                
-                                
                             </td>
                             <td class='picture'>
                                 <img src='{$detail['gambar']}' class='img-right'>
@@ -173,6 +166,9 @@
                     ";
                     
                 ?>
+
+                <h3>Recommended</h5>
+                <p>Ninja Saga</p>
                 <h3>Reviews</h3>
                 <?php
                     while ($row_review = mysqli_fetch_assoc($res_review)) {
