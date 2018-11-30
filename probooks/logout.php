@@ -15,8 +15,5 @@
         deleteCookies();
         deleteSession($con, $access_token);           
     }
-
-    
-
     header('Location: login.php');
 ?>
