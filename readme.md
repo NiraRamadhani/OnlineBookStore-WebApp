@@ -130,10 +130,10 @@ Kelemahan:
 3. Deployment yang kompleks, perlu konfigurasi untuk menjalankan setiap services karena memiliki runtime yang berbeda (tidak seperti aplikasi monolitik)
 4. Perlu automation yang tinggi dalam melakukan deployment
 
-## Deskripsi Tugas
+## Deskripsi Aplikasi
 ![](temp/architecture.png)
 
-Pada tugas 2, Anda diminta untuk mengembangkan aplikasi toko buku online sederhana yang sudah Anda buat pada tugas 1. Arsitektur aplikasi diubah agar memanfaatkan 2 buah webservice, yaitu webservice bank dan webservice buku. Baik aplikasi maupun kedua webservice, masing-masing memiliki database sendiri. Jangan menggabungkan ketiganya dalam satu database. Anda juga perlu mengubah beberapa hal pada aplikasi pro-book yang sudah Anda buat.
+Aplikasi toko buku online sederhana yang sudah dibuat pada tugas 1. Arsitektur aplikasi diubah agar memanfaatkan 2 buah webservice, yaitu webservice bank dan webservice buku. Baik aplikasi maupun kedua webservice, masing-masing memiliki database sendiri. Jangan menggabungkan ketiganya dalam satu database. Diperlukan juga mengubah beberapa hal pada aplikasi pro-book yang sudah dibuat.
 
 #### Webservice bank
 
@@ -253,8 +253,7 @@ Perubahan Web app :
 5. Halaman Registerasi : 13516009
 
 Bonus :
-1. Pembangkitan token HTOP/TOTP : 
-2. Validasi token : 
+1. Google API Login : 13516009
 
 ## About
 
