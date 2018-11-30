@@ -87,6 +87,17 @@ Menyimpan transaksi yang dilakukan oleh nasabah. Memiliki atribut:
 
 ## REST Shared Session
 
+Respresentational State Transfer (REST) merupakan konsep dalam melakukan shared session pada web yang bersifat stateless. 
+Konsep REST:
+- resource
+- server untuk menampung resource tersebut
+- client yang akan melakukan request pada server
+- interaksi antara client dan server berupa request dan response
+- representasi, yakni dokumen yang berisi status terhadap resource yang bersangkutan
+
+Membuat REST API session mirip dengan melakukan logging menggunakan web browser. Bedanya, diperlukan aplikasi yang mampu mengirim dan menerima permintaan HTTP — client REST. Client REST berbeda dari browser web, meskipun beberapa client REST dibangun di atas browser web seperti Chromium.
+
+
 ## Mekanisme Pembangkitan Token dan Expire Time
 
 1. **Pembangkitan Token**
