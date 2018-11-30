@@ -107,6 +107,18 @@ Pengecekan ini dilakukan saat pengguna me-load halaman apapun pada aplikasi.
 
 ## Kelebihan dan Kelemahan Arsitektur
 
+Kelebihan:
+1. Aplikasi scalable, secure dan reliable
+2. Setiap service berdiri sendiri (kecil kemungkinan terjadinya kegagalan sistem)
+3. Setiap services dapat dibangun tanpa ada mengganggu services yang lain
+4. Lebih mudah melakukan maintenance
+
+Kelemahan:
+1. Perubahan satu entity pada database menyebabkan setiap entity yang sama di setiap database service harus diubah
+2. Untuk beberapa kasus, sulit untuk menerapkan perubahan services sehingga perancangan yang matang
+3. Deployment yang kompleks, perlu konfigurasi untuk menjalankan setiap services karena memiliki runtime yang berbeda (tidak seperti aplikasi monolitik)
+4. Perlu automation yang tinggi dalam melakukan deployment
+
 ## Deskripsi Tugas
 ![](temp/architecture.png)
 
