@@ -236,18 +236,18 @@ Anda tidak dituntut untuk mengerjakan ini. Fokus terlebih dahulu menyelesaikan s
 *Harap semua anggota kelompok mengerjakan SOAP dan REST API kedua-duanya*. Tuliskan pembagian tugas seperti berikut ini.
 
 REST :
-1. Validasi nomor kartu : 13516009, 13516015
+1. Validasi nomor kartu : 13516009, 13516018
 2. Transfer : 13516099
 
 SOAP :
-1. Pencarian Buku : 
+1. Pencarian Buku : 13516018
 2. Pengambilan Detail : 13516009
-3. Pembelian Buku :
-4. Rekomendasi : 
+3. Pembelian Buku : 13516099
+4. Rekomendasi : 13516099
 
 Perubahan Web app :
-1. Halaman Search : 
-2. Halaman Order :
+1. Halaman Search : 13516018
+2. Halaman Order : 13516099
 3. Halaman History : 13516009
 4. Halaman Profil : 13516009
 5. Halaman Registerasi : 13516009
@@ -261,7 +261,7 @@ Bonus :
 Dibuat untuk memenuhi tugas IF3110 2018
 
 13516009 - Rahmat Nur Ibrahim Santosa 
-13516015 - Nira Ramadhani Rizki
+13516018 - Nira Rizki Ramadhani
 13516099 - Raka Hadhyana
 
 Dosen : Yudistira Dwi Wardhana | Riza Satria Perdana | Muhammad Zuhri Catur Candra
