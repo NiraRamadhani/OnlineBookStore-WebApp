@@ -121,3 +121,12 @@ td {
 .custom-file-input:hover::before {
     border-color: black;
 }
+
+input.card-col {
+    width: 90%;
+}
+
+#cardstatus{
+    width:15px !important;
+    height:15px !important;
+}

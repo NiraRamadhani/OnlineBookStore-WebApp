@@ -50,7 +50,8 @@ app.post('/transfer', urlencodedParser, function(req, res){
   console.log(jumlah);
   connection.query(`SELECT saldo FROM nasabah WHERE nomor_kartu = ${nomorPengirim}`, function(err, rows, fields){
     if(err) throw err;
-    if(rows[0] >= jumlah){
+    console.log(rows[0]['saldo']);
+    if(rows[0]['saldo'] >= jumlah){
       connection.query(`INSERT INTO transaksi(nomor_pengirim, nomor_penerima, jumlah) VALUES(${nomorPengirim}, ${nomorPenerima}, ${jumlah})`, function(){
         console.log("insert success");
       });

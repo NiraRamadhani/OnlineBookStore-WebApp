@@ -23,15 +23,15 @@ DROP TABLE IF EXISTS `ordering`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ordering` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `bookid` int(10) unsigned DEFAULT NULL,
+  `bookid` varchar(20) DEFAULT NULL,
   `count` int(11) DEFAULT NULL,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_ordering_user` (`username`),
   CONSTRAINT `FK_ordering_user` FOREIGN KEY (`username`) REFERENCES `user` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `ordering` (
 
 LOCK TABLES `ordering` WRITE;
 /*!40000 ALTER TABLE `ordering` DISABLE KEYS */;
-INSERT INTO `ordering` VALUES (100,'tayotayo',3,1,'2018-11-27');
+INSERT INTO `ordering` VALUES (1,'tayotayo','dQZmAgAAQBAJ',1,'2018-11-27'),(2,'tayotayo','YLtIBAAAQBAJ',2,'2018-11-29');
 /*!40000 ALTER TABLE `ordering` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,13 +53,13 @@ DROP TABLE IF EXISTS `review`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `review` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `orderid` int(11) unsigned NOT NULL,
+  `orderid` int(11) NOT NULL,
   `content` text,
   `rating` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_review_ordering` (`orderid`),
   CONSTRAINT `FK_review_ordering` FOREIGN KEY (`orderid`) REFERENCES `ordering` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT INTO `review` VALUES (25,100,'MANTAP I LOVE MBD',5);
+INSERT INTO `review` VALUES (26,2,'Mantap ni buku',5);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,4 +111,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-29 11:03:09
+-- Dump completed on 2018-11-29 12:22:22

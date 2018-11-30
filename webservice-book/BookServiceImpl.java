@@ -15,6 +15,10 @@ import com.probooks.jaxws.beans.Transaksi;
 import org.json.JSONObject; 
 import org.json.JSONArray;
 
+import java.util.Random;
+import java.util.Arrays;
+import java.lang.Class;;
+
 @WebService(endpointInterface = "com.probooks.jaxws.service.BookService")  
 public class BookServiceImpl implements BookService {
 
@@ -23,18 +27,18 @@ public class BookServiceImpl implements BookService {
 		//GET BOOK DETAILS
 		Book b = new Book();
 		try{  
-			String query = String.format("SELECT * FROM books WHERE id='%s'", idbook);
+			String query = String.format("SELECT idbook, harga, kat FROM penjualan NATURAL JOIN kategori WHERE idbook='%s'", idbook);
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection conDB = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/bookservice",
+				"jdbc:mysql://localhost:3306/book",
 				"root",""
 			);   
       Statement stmt = conDB.createStatement();  
       ResultSet rs = stmt.executeQuery(query);
       while(rs.next()){
 				b.setId(rs.getString(1));
-				b.setKategori(rs.getString(2));
-				b.setHarga(rs.getFloat(3));
+				b.setHarga(rs.getFloat(2));
+				//b.setKategori(rs.getString(3));
 			}
       conDB.close();  
     }catch(Exception e){System.out.println(e);}
@@ -69,35 +73,35 @@ public class BookServiceImpl implements BookService {
 				response.append(inputLine);
 			}
 			in.close();
-
-			// print result
-			System.out.println(response);
-			if(response.toString().equals("true")){
-				// Insert to DB successfull
-				String query ="INSERT INTO orderbook(bookid, kategori, jumlah)" + "VALUES(?, ?, ?)";
-				System.out.println(query);
-				try{  
-					Class.forName("com.mysql.cj.jdbc.Driver");  
-					Connection conDB = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/bookservice",
-						"root",""
-					);   
-					PreparedStatement preparedStmt = conDB.prepareStatement(query);
-					preparedStmt.setString(1, b.getId());
-					preparedStmt.setString(2, b.getKategori());
-					preparedStmt.setFloat(3, quantity);
-					preparedStmt.execute();
-					conDB.close();  
-				}catch(Exception e){System.out.println(e);}				
+			System.out.println(response.toString());
+			if( response.toString().equals("true")){
+				return true;
 			}else{
-				
+				return false;
 			}
-      return true;
 		} else {
 			System.out.println("POST request not worked");
       return false;
 		}
   }
+
+	@Override
+	public void tambahpembelian(String idbook, int quantity){
+		String query = String.format("UPDATE penjualan SET totalpenjualan = totalpenjualan + %d WHERE idbook = '%s'", quantity, idbook);
+		System.out.println(query);
+		try{  
+			Class.forName("com.mysql.cj.jdbc.Driver");  
+			Connection conDB = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/book",
+				"root",""
+			);   
+			PreparedStatement preparedStmt = conDB.prepareStatement(query);
+			preparedStmt.execute();
+			conDB.close();  
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
 
   @Override
 	public Book[] searchBook(String term) throws IOException{
@@ -130,6 +134,7 @@ public class BookServiceImpl implements BookService {
   		int books_count = json.getJSONArray("items").length();
   		Book[] books = new Book[books_count];
   		
+  		int kategori_count = 0;
   		for (int i = 0; i < books_count; i++) {
   			books[i] = new Book();
   			books[i].setId(json.getJSONArray("items").getJSONObject(i).getString("id"));
@@ -157,21 +162,30 @@ public class BookServiceImpl implements BookService {
   			}
   			
   			//kategori
-  			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("categories")) {
- 				books[i].setKategori(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories").getString(0));
+
+				String[] kategori;
+				if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("categories")) {
+  				JSONArray kategori_array = json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories");
+					System.out.println(kategori_array.length());
+					kategori = new String[kategori_array.length()];
+	  			for (int j = 0; j < kategori_array.length(); j++) {
+	  				kategori[j] = kategori_array.getString(j);
+	  			}  
   			} else {
-  				books[i].setKategori("Uncategorized");
+  				kategori = new String[1];
+  				kategori[0] = "Uncategorized";
   			}
+				books[i].setKategori(kategori);
 
   			//gambar
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
   			} else {
-  				books[i].setGambar("No Image");
+  				books[i].setGambar("public/img/default-cover.jpg");
   			}
 
   			//harga
-			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("saleInfo").has("listPrice")) {
+				if (json.getJSONArray("items").getJSONObject(i).getJSONObject("saleInfo").has("listPrice")) {
   				books[i].setHarga(json.getJSONArray("items").getJSONObject(i).getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount"));
   			} else {
   				books[i].setHarga(0);
@@ -185,17 +199,13 @@ public class BookServiceImpl implements BookService {
   			}
 
   			//average rating
- 			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
+ 				if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("averageRating")) {
   				books[i].setRating(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getFloat("averageRating"));	
   			} else {
   				books[i].setRating(0);
   			}
-
-  			//kategori
-  			
-
   		}
-  		return books;
+		return books;
   }
 
 	@Override
@@ -230,8 +240,7 @@ public class BookServiceImpl implements BookService {
 		String judul = book_json.getJSONObject("volumeInfo").getString("title");
 		String gambar;
 		float rating;
-		float harga;
-		String kategori;
+		float harga = 0;
 		String sinopsis;
 		
 		// Penulis
@@ -261,11 +270,20 @@ public class BookServiceImpl implements BookService {
 			}
 
 			// Harga
-			if (book_json.getJSONObject("saleInfo").has("listPrice")) {
-				harga = book_json.getJSONObject("saleInfo").getJSONObject("listPrice").getFloat("amount");
-			} else {
-				harga = 0;
-			}
+			try{  
+				String query = String.format("SELECT idbook, harga, kat FROM penjualan NATURAL JOIN kategori WHERE idbook='%s'", id);
+				Class.forName("com.mysql.cj.jdbc.Driver");  
+				Connection conDB = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/book",
+					"root",""
+				);   
+				Statement stmt = conDB.createStatement();  
+				ResultSet rs = stmt.executeQuery(query);
+				while(rs.next()){
+					harga = rs.getFloat(2);
+				}
+				conDB.close();  
+			}catch(Exception e){System.out.println(e);}			
 
 			// Average Rating
 			if (book_json.getJSONObject("volumeInfo").has("averageRating")) {
@@ -282,11 +300,18 @@ public class BookServiceImpl implements BookService {
 			}
 
 			// Kategori
+			String[] kategori;
 			if (book_json.getJSONObject("volumeInfo").has("categories")) {
-				kategori = book_json.getJSONObject("volumeInfo").getJSONArray("categories").getString(0);
-			} else {
-				kategori = "Uncategorized";
-			}
+  				JSONArray kategori_array = book_json.getJSONObject("volumeInfo").getJSONArray("categories");
+  				kategori = new String[kategori_array.length()];
+	  			for (int j = 0; j < kategori_array.length(); j++) {
+	  				kategori[j] = kategori_array.getString(j);
+	  			}  
+
+  			} else {
+  				kategori = new String[1];
+  				kategori[0] = "Uncategorized";
+  			}
 
 			// Set Value of Detail
 			detail.setId(id);
@@ -300,37 +325,118 @@ public class BookServiceImpl implements BookService {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+
+		String query2 ="INSERT INTO penjualan(idbook, harga, totalpenjualan) VALUES(?, ?, ?)";
+		System.out.println(query2);
+		try{  
+			Class.forName("com.mysql.cj.jdbc.Driver");  
+			Connection conDB = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/book",
+				"root",""
+			);   
+			PreparedStatement preparedStmt = conDB.prepareStatement(query2);
+			preparedStmt.setString(1, detail.getId());
+			preparedStmt.setFloat(2, detail.getHarga());
+			preparedStmt.setInt(3, 0);
+			preparedStmt.execute();
+			conDB.close();  
+		}catch(Exception e){
+			System.out.println(e);
+		}
 		
+		String query1 ="INSERT INTO kategori(idbook, kat) VALUES(?, ?)";
+		System.out.println(query1);
+		try{  
+			Class.forName("com.mysql.cj.jdbc.Driver");  
+			Connection conDB = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/book",
+				"root",""
+			);   
+			PreparedStatement preparedStmt = conDB.prepareStatement(query1);
+			for (int j=0; j < detail.getKategori().length; j++) {
+				preparedStmt.setString(1, detail.getId());
+				preparedStmt.setString(2, detail.getKategori()[j]);
+				preparedStmt.execute();
+			}
+			conDB.close();  
+		}catch(Exception e){
+			System.out.println(e);
+		}
 		return detail;
 	};
 
 	@Override
-	public String getRecommendation(String kategori){
-		String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
-		// SELECT distinct idbook, totalpenjualan 
-		// FROM book.penjualan natural join book.kategori 
-		// WHERE kat LIKE "%Fiction%" ORDER BY totalpenjualan desc
-		// LIMIT 1; 
-		int orderid;
-		String idbook = "0";
-		int total;
-		try{  
-      Class.forName("com.mysql.cj.jdbc.Driver");  
-      Connection con = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/bookservice",
-				"root",""
-			);   
-      Statement stmt = con.createStatement();  
-      ResultSet rs = stmt.executeQuery(query);
-      while(rs.next()){
-				orderid = rs.getInt(1);
-				idbook = rs.getString(2);
-				kategori = rs.getString(3);
-				total = rs.getInt(4);
-				System.out.println(orderid + "  " + idbook + "  " + kategori + " " + total);
+	public String getRecommendation(String[] kategori) throws IOException {
+		// String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+		String query = "SELECT idbook FROM kategori NATURAL JOIN penjualan WHERE ";
+		for(int i = 0; i < kategori.length; i++){
+			if(i != kategori.length - 1){
+				query += "kat = '" + kategori[i] + "' or ";
+			} else {
+				query += "kat = '" + kategori[i] + "' ";
 			}
-      con.close();  
-    }catch(Exception e){System.out.println(e);}
+		}
+		query += "GROUP BY idbook ORDER BY totalpenjualan DESC"; 
+		System.out.println(query);
+		String idbook = "default";
+		
+		System.out.println("INDEX KE 0-" + kategori[0]);
+		// if (kategori[0].equals("Uncategorized")) {
+		// 	idbook = "CcFNCgAAQBAJ";
+		// } else {
+			try{  
+				Class.forName("com.mysql.cj.jdbc.Driver");  
+				Connection con = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/book",
+						"root",""
+					);   
+				Statement stmt = con.createStatement();  
+				ResultSet rs = stmt.executeQuery(query);
+				rs.next();
+				idbook = rs.getString(1);
+				System.out.println("Rekomendasi: " + idbook);
+				con.close();  
+				
+				System.out.println("INI" + idbook + "TAIIIII");
+				if (idbook.equals("default")) {
+					System.out.println("mantap");
+					String term = kategori[0];
+					term = term.replace(" ", "+");
+					String USER_AGENT = "Mozilla/5.0";
+					String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=subject:'" +term+ "'&fields=items(id)";
+
+					URL obj = new URL(GET_URL);
+					HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+					conn.setRequestMethod("GET");
+					conn.setRequestProperty("User-Agent", USER_AGENT);
+					int responseCode = conn.getResponseCode();
+					System.out.println("GET Response Code :: " + responseCode);
+					StringBuffer response = new StringBuffer();
+					if (responseCode == HttpURLConnection.HTTP_OK) { // success
+						BufferedReader in = new BufferedReader(new InputStreamReader(
+								conn.getInputStream()));
+						String inputLine;
+						
+						while ((inputLine = in.readLine()) != null) {
+							response.append(inputLine);
+						}
+						in.close();
+
+						Random rand = new Random(); 
+						int value = rand.nextInt(10);
+
+						JSONObject json = new JSONObject(response.toString());
+						idbook = json.getJSONArray("items").getJSONObject(value).getString("id");
+					} 
+				} else {
+					System.out.println("GET request not worked");
+				}
+				
+			} catch(Exception e){
+				System.out.println(e+"MASUK KE BAWAH CUY");
+			}
+		// }
 		return idbook;
-	};
+		};
+		
 }

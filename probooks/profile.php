@@ -1,36 +1,41 @@
 <?php
-    
+
+    require_once 'utils/validate-session.php';
+
     //get user data from cookie
     $uname = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
 
-    if (isset($uname)) {    
-        //connect to database
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "probooks";
+    validate($access_token, $uname, null);
+    checkSession();
 
-        $conn = mysqli_connect($servername, $username, $password, $dbname);
-        if (!$conn) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+    setcookie('access_token', $access_token, time() + 600, '/');
+    setcookie('username', $uname, time() + 600, '/');
 
-        //fetch data from db
-        $sql = "SELECT username, name, address, phone, email, image FROM user WHERE username = '$uname'";
-        $result = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($result);
-        $uname = $row["username"];
-        $name = $row["name"];
-        $address = $row["address"];
-        $phone = $row["phone"];
-        $email = $row["email"];
-        $photo = $row["image"];
+    //connect to database
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "probooks";
 
-        mysqli_close($conn);
-    } else {
-        //redirect to login page
-        header('Location: login.php');
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    if (!$conn) {
+        die("Connection failed: " . $conn->connect_error);
     }
+
+    //fetch data from db
+    $sql = "SELECT username, name, address, phone, email, image, cardnumber FROM user WHERE username = '$uname'";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $uname = $row["username"];
+    $name = $row["name"];
+    $address = $row["address"];
+    $phone = $row["phone"];
+    $email = $row["email"];
+    $photo = $row["image"];
+    $cardnumber = $row["cardnumber"];
+
+    mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -69,22 +74,27 @@
                 <tr>
                     <td><img src="public/icons/user.png" width=20px height=20px></td>
                     <td>Username</td>
-                    <td>@<?php echo "$uname"; ?></td>
+                    <td class="content">@<?php echo "$uname"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/email.png" width=20px height=20px></td>
                     <td>Email</td>
-                    <td><?php echo "$email"; ?></td>
+                    <td class="content"><?php echo "$email"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/address.png" width=20px height=20px></td>
                     <td>Address</td>
-                    <td><?php echo "$address"; ?></td>
+                    <td class="content"><?php echo "$address"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/phone.png" width=20px height=20px></td>
                     <td>Phone Number</td>
-                    <td><?php echo "$phone"; ?></td>
+                    <td class="content"><?php echo "$phone"; ?></td>
+                </tr>
+                <tr>
+                    <td><img src="public/icons/card.png" width=20px height=20px></td>
+                    <td>Card Number</td>
+                    <td class="content"><?php echo "$cardnumber"; ?></td>
                 </tr>
             </table>
         </div>

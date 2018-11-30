@@ -1,34 +1,39 @@
 <?php
+    require_once 'utils/validate-session.php';
+
     //get user data from cookie
     $uname = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
 
-    if (isset($uname)) {
-        //connect to database
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "probooks";
+    validate($access_token, $uname, null);
+    checkSession();
 
-        $conn = mysqli_connect($servername, $username, $password, $dbname);
-        if (!$conn) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+    setcookie('access_token', $access_token, time() + 600, '/');
+    setcookie('username', $uname, time() + 600, '/');
 
-        //fetch data from db
-        $sql = "SELECT name, address, phone, image FROM user WHERE username = '$uname'";
+    //connect to database
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "probooks";
 
-        $result = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($result);
-        $name = $row["name"];
-        $address = $row["address"];
-        $phone = $row["phone"];
-        $photo = $row["image"];
-
-        mysqli_close($conn);
-    } else {
-        //redirect to login page
-        header('Location: login.php');
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    if (!$conn) {
+        die("Connection failed: " . $conn->connect_error);
     }
+
+    //fetch data from db
+    $sql = "SELECT name, address, phone, image, cardnumber FROM user WHERE username = '$uname'";
+
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $name = $row["name"];
+    $address = $row["address"];
+    $phone = $row["phone"];
+    $photo = $row["image"];
+    $cardnumber = $row["cardnumber"];
+
+    mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -81,6 +86,11 @@
                         <td><input class="notfile" type="text" name="phone" value=<?php echo "$phone"; ?>></td>
                     </tr>
                     <tr>
+                        <td>Card Number</td>
+                        <td><input class="notfile card-col" type="text" name="cardnumber" onkeyup="checkcard();" value=<?php echo "$cardnumber"; ?>>
+                        <a id="card_status"></a></td>
+                    </tr>
+                    <tr>
                         <td><input type="button" onclick="location.href='profile.php';" value="Back"></td>
                         <td class="submit"><input type="submit" value="Save"></td>
                     </tr>
@@ -94,6 +104,7 @@
                 var name = document.forms["edit"]["name"].value;
                 var address = document.forms["edit"]["address"].value;
                 var phone = document.forms["edit"]["phone"].value;
+                var cardnumber = document.forms["edit"]["cardnumber"].value;
                 if (name == "") {
                     alert("Name must be filled out");
                     return false;
@@ -114,6 +125,42 @@
                     alert("Phone Number must be 9 to 12 characters");
                     return false;
                 }
+                if (cardnumber == "") { 
+                    alert("Card number must be filled out");
+                    return false;
+                }
+                var cardhtml = document.getElementById("cardstatus").getAttribute("src");
+                if (cardhtml == "public/icons/mark.png") {
+                    alert("Card number doesn't exists");
+                    return false;
+                }
+            }
+
+            function checkcard() {
+                var cardnumber = document.forms["edit"]["cardnumber"].value;
+                var xmlHttp = new XMLHttpRequest();
+                var url="http://localhost:3000/validasi";
+                var param = "cardnumber=" + cardnumber;
+                xmlHttp.open("POST", url, true);
+
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                // xmlHttp.setRequestHeader("Content-length", param.length);
+                // xmlHttp.setRequestHeader("Host", "3000");
+                // xmlHttp.setRequestHeader("Connection", "close");
+
+                xmlHttp.onreadystatechange = function() {
+                    console.log(xmlHttp.responseText);
+                    console.log(xmlHttp.status);                    
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        console.log(xmlHttp);
+                        document.getElementById('card_status').innerHTML = (xmlHttp.responseText);
+                    }
+                }
+                xmlHttp.send(param);
+            }
+
+            window.onload = function() {
+                checkcard();
             }
 
             displayFile = function() {

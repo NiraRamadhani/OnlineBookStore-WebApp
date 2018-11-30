@@ -1,29 +1,30 @@
 <?php
+require_once 'utils/validate-session.php';
 
 // check whether user is already logged in or not
 // $config = include '/config/db.php';
 $username = $_COOKIE['username'];
 $access_token = $_COOKIE['access_token'];
-$id = $_COOKIE['id'];
 
-if ($id == $access_token.$username) {
-    $config = include 'config/db.php';
-    $conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
-        if (!$conn) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-    
-    $query = "SELECT ordering.id, bookid, username, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
-        FROM ordering
-	    left join review on ordering.id=review.orderid
-        WHERE username=\"$username\"
-        ORDER BY id desc";
+$config = include 'config/db.php';
+$conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
+    if (!$conn) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-    $result = mysqli_query($conn, $query);
-} else {
-    //redirect to login page
-    header('Location: login.php');
-}
+validate($access_token, $username, null);
+checkSession();
+
+setcookie('access_token', $access_token, time() + 600, '/');
+setcookie('username', $username, time() + 600, '/');
+
+$query = "SELECT ordering.id, bookid, username, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
+    FROM ordering
+    left join review on ordering.id=review.orderid
+    WHERE username=\"$username\"
+    ORDER BY id desc";
+
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -54,9 +55,9 @@ if ($id == $access_token.$username) {
         <p class="title">History</p>
         <div id="history-content">
             <?php 
+                $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
                 while($row = $result->fetch_assoc()) {
-                    // CALL SOAP API
-                    $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+                    // CALL SOAP API    
                     $params = array(
                         "arg0" => $row['bookid']
                     );
@@ -64,16 +65,18 @@ if ($id == $access_token.$username) {
                     $detail = json_encode($response);
                     $detail = json_decode($detail, true);
 
-                    if ($row['reviewed'] == '1') {
-                        echo"<div class='flex-container'>
+                    echo"<div class='flex-container'>
                             <div class='book-info'> 
+                                <a href='order.php?bookid=$detail[id]' style='text-decoration: none'>    
                                 <img class='book-pict' src={$detail["gambar"]}>
                                 <p class='book-title'>{$detail["judul"]} </p>
-                                <p class='book-content'>Jumlah: {$row['count']} <br>
-                                Anda sudah memberikan review <br>
-                            </div>
+                                </a>
+                                <p class='book-content'>Jumlah: {$row['count']} <br>";
+                    if ($row['reviewed'] == '1') {
+                        echo"Anda sudah memberikan review <br>
+                            </div>";
                             
-                            <div class='buy-time'> 
+                        echo"<div class='buy-time'> 
                                 <p class='buy-info'>";
 
                         echo date("j F Y", strtotime($row['date']));
@@ -81,13 +84,8 @@ if ($id == $access_token.$username) {
                                 </p>
                             </div>
                         </div>";
-                    } else { 
-                        echo"<div class='flex-container'>
-                            <div class='book-info'> 
-                                <img class='book-pict' src={$detail["gambar"]}>
-                                <p class='book-title'>{$detail["judul"]} </p>
-                                <p class='book-content'>Jumlah: {$row['count']} <br>
-                                Belum direview<br>
+                    } else {
+                        echo"Belum direview<br>
                             </div>
                             
                             <div class='buy-time'> 

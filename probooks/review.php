@@ -1,33 +1,33 @@
 <?php
+require_once 'utils/validate-session.php';
+
 // check whether user is already logged in or not
 $username = $_COOKIE['username'];
 $access_token = $_COOKIE['access_token'];
-$id = $_COOKIE['id'];
 
-if ($id == $access_token.$username) {    
+$config = include 'config/db.php';
+$conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
+if (!$conn) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+validate($access_token, $username, null);
+checkSession($conn);
+
+setcookie('access_token', $access_token, time() + 600, '/');
+setcookie('username', $username, time() + 600, '/');
+ 
+
     $order = $_POST['orderId'];
     $book = $_POST['bookId'];
 
     if (isset($order, $book)) {
-        $config = include 'config/db.php';
-        $conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
-        if (!$conn) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        // $query = "SELECT book.id, title, author, image
-        //         FROM book
-        //         WHERE book.id=$book";
-
-        // $result = mysqli_query($conn, $query);
-
+       //do nothing
     } else {
         //redirect to search-books page
         header('Location: history.php');
     }
-} else {
-    //redirect to login page
-    header('Location: login.php');
-}
+
 ?>
 
 <!DOCTYPE html>

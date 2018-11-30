@@ -91,8 +91,8 @@ button {
 }
 
 .star {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
 }
 
 .star-one {
@@ -185,4 +185,42 @@ table td {
 .harga {
     color: tomato;
     font-weight: 900;
+}
+
+.flex-container {
+    display: flex;
+    margin-bottom: 50px;
+    line-height: 1.25;
+  }
+
+.book-info {
+	color: #565656;
+	width: 80%;
+}
+
+.book-pict {
+	float: left;
+	margin-right: 20px;
+    width: 100px;
+    height: auto;
+    /* display: inline-block; */
+	/* height: 100px; */
+	/* object-fit: contain; */
+	/* border: 1px solid #464646; */
+}
+
+.clearfix {
+    overflow: auto;
+}
+.book-title {
+	color: #F26600;
+	font-size: 1.5em;
+	margin-top: 0px;
+	margin-bottom: -5px;
+	margin-right: 0px;
+	font-weight: bold;
+}
+
+.judul {
+    margin-top:45px;
 }

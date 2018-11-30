@@ -34,7 +34,7 @@
 .book-info {
 	color: #565656;
 	margin-left: 30px;
-	flex-grow: 5;
+	width: 80%;
 }
 
 .buy-time {
@@ -62,6 +62,7 @@
 	font-size: 16px;
 	margin-top: 10px;
 	margin-bottom: 0px;
+	margin-left: 122px;
 }
 
 .review-button{

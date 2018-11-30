@@ -1,9 +1,19 @@
 <?php
+    require_once 'utils/validate-session.php';
+
+    // Get data from cookie
+    $username = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
     
-    if (isset($_COOKIE['username']) and isset($_COOKIE['access_token']) and isset($_COOKIE['id'])) {
-        header('Location: search.php');  
+    if(isset($username) && (isset($access_token))) {
+        validate($access_token, $username, 'search.php');
+        setcookie('access_token', $access_token, time() + 600, '/');
+        setcookie('username', $username, time() + 600, '/');
     }
-        
+
+    checkSession();
+
+    
 ?>
 <!DOCTYPE html>
     <html>
@@ -123,9 +133,9 @@
                     return false;
                 }
                 
-                var namehtml = document.getElementById("username_status").getAttribute("src");
-                var emailhtml = document.getElementById("email_status").getAttribute("src");
-                var cardhtml = document.getElementById("card_status").getAttribute("src");
+                var namehtml = document.getElementById("unamestatus").getAttribute("src");
+                var emailhtml = document.getElementById("emailstatus").getAttribute("src");
+                var cardhtml = document.getElementById("cardstatus").getAttribute("src");
                 if (namehtml == "public/icons/mark.png") {
                     alert("Username already exists");
                     return false;
@@ -197,6 +207,12 @@
                     }
                 }
                 xmlHttp.send(param);
+            }
+
+            window.onload = function() {
+                checkname();
+                checkemail();
+                checkcard();
             }
 
         </script>

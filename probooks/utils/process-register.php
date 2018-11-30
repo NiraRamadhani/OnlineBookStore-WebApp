@@ -26,10 +26,16 @@
         //execute query
         if ($conn->query($query) === TRUE) {
             $access_token = bin2hex(random_bytes(16));
-            setcookie('username', $uname, time() + 3600, '/');
-            setcookie('access_token', $access_token, time() + 3600, '/');
-            setcookie('id', $access_token . $uname, false, '/');
-            header('Location: ../search-books.php');
+            $browser = $_SERVER['HTTP_USER_AGENT'];
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $expire = microtime(true) + 3600;
+            
+            $insert_session_query = "INSERT INTO probooks.session (session_id, username, browser, ip_adress, expire_time) VALUES ('$access_token', '$uname', '$browser', '$ip', '$expire')";
+            $session = mysqli_query($conn, $insert_session_query);
+            
+            setcookie('username', $uname, time() + 600, '/');
+            setcookie('access_token', $access_token, time() + 600, '/');
+            header('Location: ../search.php');
         }
     }
         

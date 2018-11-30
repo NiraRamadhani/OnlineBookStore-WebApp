@@ -20,11 +20,12 @@
     $filename = $_FILES['photoaddress']['name'];
     $filepath = "public/img/profpic/" . $filename;
     $file_tmp = $_FILES['photoaddress']['tmp_name'];
+    $card = $_POST['cardnumber'];
     //create query
     if ($filename !== "") {
-        $query = "UPDATE user SET name = '$name', address = '$adr', phone = '$phone', image = '$filepath' WHERE username = '$uname'";
+        $query = "UPDATE user SET name = '$name', address = '$adr', phone = '$phone', image = '$filepath' WHERE, cardnumber = '$card' username = '$uname'";
     } else {
-        $query = "UPDATE user SET name = '$name', address = '$adr', phone = '$phone' WHERE username = '$uname'";
+        $query = "UPDATE user SET name = '$name', address = '$adr', phone = '$phone', cardnumber = '$card' WHERE username = '$uname'";
     }
     //execute query
     if ($conn->query($query) === TRUE) {
