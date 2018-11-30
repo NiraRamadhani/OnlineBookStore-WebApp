@@ -142,7 +142,6 @@
                         console.log(xmlHttp.responseText);
                         signOut();
                         window.location = "/search.php";
-
                     }
                 }
                 xmlHttp.send(param);
