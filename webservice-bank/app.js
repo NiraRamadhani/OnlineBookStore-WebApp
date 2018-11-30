@@ -11,6 +11,9 @@ var connection = mysql.createConnection({
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var urlencodedParser =bodyParser.urlencoded({extended: false});
+var OTP = require('otp.js');
+// get HOTP object
+var HOTP = OTP.hotp;
 
 connection.connect(function(err){
   if(err) throw err;
@@ -45,28 +48,56 @@ app.post('/transfer', urlencodedParser, function(req, res){
   nomorPengirim = req.body.nomorPengirim;
   nomorPenerima = req.body.nomorPenerima;
   jumlah = req.body.jumlah;
+  otp = req.body.otp;
   console.log(nomorPengirim);
   console.log(nomorPenerima);
   console.log(jumlah);
-  connection.query(`SELECT saldo FROM nasabah WHERE nomor_kartu = ${nomorPengirim}`, function(err, rows, fields){
-    if(err) throw err;
-    console.log(rows[0]['saldo']);
-    if(rows[0]['saldo'] >= jumlah){
-      connection.query(`INSERT INTO transaksi(nomor_pengirim, nomor_penerima, jumlah) VALUES(${nomorPengirim}, ${nomorPenerima}, ${jumlah})`, function(){
-        console.log("insert success");
-      });
-      connection.query(`UPDATE nasabah SET saldo = saldo - ${jumlah} WHERE nomor_kartu = ${nomorPengirim}`, function(){
-        console.log("money sent");
-      });
-      connection.query(`UPDATE nasabah SET saldo = saldo + ${jumlah} WHERE nomor_kartu = ${nomorPenerima}`, function(){
-        console.log("money received");
-      });
-      res.send(true);
-    } else {
-      console.log("saldo kurang");
-      res.send(false);
-    }
-  });
+  //VERIFIKASI OTP
+  try
+  {
+    // verify otp '755224' for key '12345678901234567890' in string format
+    var result = HOTP.verify('755224', {string:'12345678901234567890'});
+    console.log("RESULT : " + result); // print result => {delta:{int:0}}
+  }
+  catch(ex)
+  {
+    console.error(ex); // print error occurred during OTP verification process
+  }
+  if(result){
+    connection.query(`SELECT saldo FROM nasabah WHERE nomor_kartu = ${nomorPengirim}`, function(err, rows, fields){
+      if(err) throw err;
+      console.log(rows[0]['saldo']);
+      if(rows[0]['saldo'] >= jumlah){
+        connection.query(`INSERT INTO transaksi(nomor_pengirim, nomor_penerima, jumlah) VALUES(${nomorPengirim}, ${nomorPenerima}, ${jumlah})`, function(){
+          console.log("insert success");
+        });
+        connection.query(`UPDATE nasabah SET saldo = saldo - ${jumlah} WHERE nomor_kartu = ${nomorPengirim}`, function(){
+          console.log("money sent");
+        });
+        connection.query(`UPDATE nasabah SET saldo = saldo + ${jumlah} WHERE nomor_kartu = ${nomorPenerima}`, function(){
+          console.log("money received");
+        });
+        res.send(true);
+      } else {
+        console.log("saldo kurang");
+        res.send(false);
+      }
+    });
+  }
+});
+
+app.get("/getToken", function(req, res){
+  try
+  {
+    // generate otp for key '12345678901234567890' in string format
+    var code = HOTP.gen({string:'12345678901234567890'});
+    console.log(code); // print otp result => 755224
+    res.send(code);
+  }
+  catch(ex)
+  {
+    console.error(ex); // print error occurred during OTP generation process
+  }
 });
 
 app.listen(3000, function(){

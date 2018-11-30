@@ -66,8 +66,6 @@
     // ."<br>email: ".$userInfo->email;
     // $service = new Google_Service_Books($client);
   
-    $sec = 1;
-    $page = $_SERVER['PHP_SELF'];
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +76,6 @@
             <link rel="stylesheet" type="text/css" href="public/css/body.css">
             <script src="https://apis.google.com/js/platform.js" async defer></script>
             <meta name="google-signin-client_id" content="534996295732-pg3de2vf8qceeb860hgscm3hk21438gj.apps.googleusercontent.com">
-            
         </head>
         <body>
             <div class="content">
@@ -98,8 +95,9 @@
                     </center><br>
                     <center>
                     <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                    <br>
+                    </center>
                         <a href="register.php">Don't have an account?</a><br><br>
+                    <center>
                         <input type="submit" name="submit" value="LOGIN">
                     </center>
                 </form>
@@ -126,36 +124,30 @@
                 console.log('Name: ' + profile.getName());
                 console.log('Image URL: ' + profile.getImageUrl());
                 console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                
+            }
+
+            function googleLogin() {
+                var profile = googleUser.getBasicProfile();
                 var email = profile.getEmail();
                 var image = profile.getImageUrl();
                 var name = profile.getName();
-
+                
                 var xmlHttp = new XMLHttpRequest();
-                var url="utils/checkgoogle.php";
-                var param = "email=" + email + "&name=" + name + "&image=" + image;
+                var url="utils/checkemail.php";
+                var param = "email=" + email;
                 xmlHttp.open("POST", url, true);
 
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", param.length);
+                xmlHttp.setRequestHeader("Connection", "close");
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                        console.log(xmlHttp.responseText);
-                        signOut();
-                        window.location = "/search.php";
-
+                        document.getElementById('email_status').innerHTML = xmlHttp.responseText;
                     }
-                }
-                xmlHttp.send(param);
+            }
                 
-            }
-
-            function signOut() {
-                var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                console.log('User signed out.');
-                });
-            }
-            
+    }
+    xmlHttp.send(param);
         </script>
     </html>
 

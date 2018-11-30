@@ -37,7 +37,7 @@
                 <span class="text-yellow">Pro</span><span class="text-white">-Book</span>
             </a></li>
             <li id="li-username"><a href="profile.php" id="username" class="text-white">Hi, <?php echo "$username"; ?></a></li>
-            <li id="li-logout"><a href="logout.php" id="logout" class="text-white" onclick="signOut()">
+            <li id="li-logout"><a href="logout.php" id="logout" class="text-white">
                 <img src="public/img/power.png" alt="Logout" height="30" width="30">
             </a></li>
         </ul>
@@ -120,12 +120,3 @@
     </div>  
 </body>
 </html>
-
-<script>
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-  }
-</script>
